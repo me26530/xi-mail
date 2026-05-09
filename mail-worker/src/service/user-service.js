@@ -171,7 +171,20 @@ const userService = {
 
 
 		if (email) {
-			conditions.push(sql`${user.email} COLLATE NOCASE LIKE ${'%'+ email + '%'}`);
+			// Search by primary email OR by any sub-account email they own
+			const accountMatches = await orm(c)
+				.select({ userId: accountEntity.userId })
+				.from(accountEntity)
+				.where(sql`${accountEntity.email} COLLATE NOCASE LIKE ${'%' + email + '%'}`)
+				.all();
+			const accountUserIds = [...new Set(accountMatches.map(a => a.userId))];
+			if (accountUserIds.length > 0) {
+				conditions.push(
+					sql`(${user.email} COLLATE NOCASE LIKE ${'%' + email + '%'} OR ${user.userId} IN (${sql.raw(accountUserIds.join(','))}))`
+				);
+			} else {
+				conditions.push(sql`${user.email} COLLATE NOCASE LIKE ${'%' + email + '%'}`);
+			}
 		}
 
 

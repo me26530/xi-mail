@@ -37,23 +37,27 @@ const settingService = {
 			throw new BizError('数据库未初始化 Database not initialized.');
 		}
 
-		let domainList = c.env.domain;
+		// Parse managed domains (web-configured), fall back to env domain
+		let managedDomains = [];
+		if (setting.managedDomains) {
+			try { managedDomains = JSON.parse(setting.managedDomains); } catch (e) { managedDomains = []; }
+		}
+		setting.managedDomains = managedDomains;
 
-		if (typeof domainList === 'string') {
-			try {
-				domainList = JSON.parse(domainList)
-			} catch (error) {
-				throw new BizError(t('notJsonDomain'));
+		let domainList;
+		if (managedDomains.length > 0) {
+			// Use only enabled managed domains
+			domainList = managedDomains.filter(d => d.enabled !== false).map(d => '@' + d.domain);
+		} else {
+			// Fall back to wrangler.toml env
+			let envDomain = c.env.domain;
+			if (typeof envDomain === 'string') {
+				try { envDomain = JSON.parse(envDomain); } catch (error) { throw new BizError(t('notJsonDomain')); }
 			}
+			if (!envDomain) throw new BizError(t('noDomainVariable'));
+			domainList = envDomain.map(item => '@' + item);
 		}
-
-		if (!c.env.domain) {
-			throw new BizError(t('noDomainVariable'));
-		}
-
-		domainList = domainList.map(item => '@' + item);
 		setting.domainList = domainList;
-
 
 		let linuxdoSwitch = c.env.linuxdo_switch;
 
@@ -143,6 +147,10 @@ const settingService = {
 
 		if (params.domainMapping && typeof params.domainMapping === 'object') {
 			params.domainMapping = JSON.stringify(params.domainMapping);
+		}
+
+		if (Array.isArray(params.managedDomains)) {
+			params.managedDomains = JSON.stringify(params.managedDomains);
 		}
 
 		params.resendTokens = JSON.stringify(resendTokens);
@@ -247,7 +255,8 @@ const settingService = {
 		emailKeywordBlacklist: settingRow.emailKeywordBlacklist || [],
 		domainMapping: settingRow.domainMapping || {},
 		regKeyHint: settingRow.regKeyHint || '',
-		regKeyLink: settingRow.regKeyLink || ''
+		regKeyLink: settingRow.regKeyLink || '',
+		managedDomains: settingRow.managedDomains || []
 		};
 	}
 };

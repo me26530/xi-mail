@@ -440,9 +440,13 @@ async function latest() {
   max-width: 280px;
 
   :deep(.el-input__wrapper) {
-    height: 32px;
+    height: 28px;
     box-sizing: border-box;
     padding: 0 8px;
+  }
+
+  :deep(.el-input__inner) {
+    height: 28px;
   }
 
   .setting-icon {
@@ -472,7 +476,7 @@ async function latest() {
   width: 92px;
 
   :deep(.el-select__wrapper) {
-    height: 32px;
+    height: 28px;
     box-sizing: border-box;
     padding: 0 6px;
     min-height: unset;
@@ -489,7 +493,7 @@ async function latest() {
 }
 
 :deep(.el-select__wrapper) {
-  height: 32px;
+  height: 28px;
   box-sizing: border-box;
   min-height: unset;
 }

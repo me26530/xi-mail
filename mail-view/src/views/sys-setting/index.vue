@@ -119,7 +119,7 @@
                   </el-tooltip>
                 </div>
                 <div class="auto-ban-right">
-                  <el-input-number size="small" v-model="setting.autoBanMonths" @change="change" :min="0" :max="120" :step="1" style="width: 110px;" />
+                  <el-input-number v-model="setting.autoBanMonths" @change="change" :min="0" :max="120" :step="1" style="width: 110px;" />
                   <span class="ban-unit">{{ $t('month') }}</span>
                 </div>
               </div>
@@ -131,7 +131,7 @@
                   </el-tooltip>
                 </div>
                 <div>
-                  <el-input size="small" v-model="setting.banMessage" @change="change" style="width: 200px;" />
+                  <el-input v-model="setting.banMessage" @change="change" style="width: 200px;" />
                 </div>
               </div>
               <div class="setting-item">
@@ -331,6 +331,27 @@
                   <el-button class="opt-button" style="margin-top: 0" @click="openResendForm" size="small"
                              type="primary">
                     <Icon icon="material-symbols:add-rounded" width="16" height="16"/>
+                  </el-button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Domain Management Card -->
+          <div class="settings-card">
+            <div class="card-title">{{ $t('domainManagement') }}</div>
+            <div class="card-content">
+              <div class="setting-item">
+                <div>
+                  <span>{{ $t('domainList') }}</span>
+                  <el-tooltip effect="dark" :content="$t('domainManagementDesc')">
+                    <Icon class="warning" icon="fe:warning" width="18" height="18"/>
+                  </el-tooltip>
+                </div>
+                <div class="forward">
+                  <span class="domain-count">{{ managedDomainsData.length }}</span>
+                  <el-button class="opt-button" size="small" type="primary" @click="openDomainManagement">
+                    <Icon icon="fluent:settings-48-regular" width="18" height="18"/>
                   </el-button>
                 </div>
               </div>
@@ -795,6 +816,44 @@
           </div>
         </form>
       </el-dialog>
+      <el-dialog v-model="domainManagementShow" :title="$t('domainManagement')" width="460" @closed="resetDomainForm">
+        <div class="domain-management">
+          <div class="domain-add-row">
+            <el-input
+              v-model="newDomainInput"
+              :placeholder="$t('domainPlaceholder')"
+              @keyup.enter="addDomain"
+              style="flex:1"
+            />
+            <el-button type="primary" @click="addDomain">{{ $t('add') }}</el-button>
+          </div>
+          <div v-if="managedDomainsData.length === 0" class="domain-empty">{{ $t('noDomains') }}</div>
+          <div v-else class="domain-list">
+            <div v-for="(item, idx) in managedDomainsData" :key="item.domain" class="domain-row">
+              <span class="domain-name">{{ item.domain }}</span>
+              <div class="domain-actions">
+                <el-switch
+                  v-model="item.enabled"
+                  :active-value="true"
+                  :inactive-value="false"
+                  size="small"
+                  @change="() => domainItemChange()"
+                />
+                <el-button size="small" type="danger" text @click="removeDomain(idx)">
+                  <Icon icon="material-symbols:delete-outline-rounded" width="16" height="16"/>
+                </el-button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <template #footer>
+          <div class="dialog-footer">
+            <el-button @click="domainManagementShow = false">{{ $t('cancel') }}</el-button>
+            <el-button type="primary" :loading="settingLoading" @click="saveDomains">{{ $t('save') }}</el-button>
+          </div>
+        </template>
+      </el-dialog>
+
       <el-dialog v-model="emailPrefixShow" :title="t('emailPrefix')"  @closed="resetEmailPrefix"  >
         <div class="email-prefix">
           <div>{{ t('atLeast') }}</div>
@@ -884,7 +943,7 @@ defineOptions({
   name: 'sys-setting'
 })
 
-const currentVersion = 'v1.0.4'
+const currentVersion = 'v1.0.6'
 const hasUpdate = ref(false)
 let getUpdateErrorCount = 1;
 const {t, locale} = useI18n();
@@ -918,6 +977,10 @@ const keywordBlacklistShow = ref(false)
 const keywordBlacklistData = ref([])
 const senderDomainBlacklistShow = ref(false)
 const senderDomainBlacklistData = ref([])
+const domainManagementShow = ref(false)
+const managedDomainsData = ref([])
+const newDomainInput = ref('')
+
 const systemDomains = computed(() => {
   return (settingStore.domainList || []).map(d => d.replace(/^@/, ''))
 })
@@ -1057,6 +1120,17 @@ function getSettings() {
       : (setting.value.senderDomainBlacklist || '').split(',').filter(Boolean)
     resendTokenForm.domain = setting.value.domainList[0]
     minEmailPrefix.value = setting.value.minEmailPrefix
+    // Init managed domains: use stored list or seed from env domainList
+    if (setting.value.managedDomains && setting.value.managedDomains.length > 0) {
+      managedDomainsData.value = setting.value.managedDomains.map(d =>
+        typeof d === 'string' ? { domain: d, enabled: true } : { ...d }
+      )
+    } else {
+      managedDomainsData.value = (setting.value.domainList || []).map(d => ({
+        domain: d.replace(/^@/, ''),
+        enabled: true
+      }))
+    }
     firstLoading.value = false
     editTitle.value = setting.value.title
     r2DomainInput.value = setting.value.r2Domain
@@ -1068,6 +1142,39 @@ function getSettings() {
   })
 }
 
+
+function openDomainManagement() {
+  domainManagementShow.value = true
+}
+
+function resetDomainForm() {
+  newDomainInput.value = ''
+}
+
+function addDomain() {
+  const d = newDomainInput.value.trim().replace(/^@/, '').toLowerCase()
+  if (!d) return
+  if (managedDomainsData.value.some(item => item.domain === d)) {
+    ElMessage.warning(t('domainExists'))
+    return
+  }
+  managedDomainsData.value.push({ domain: d, enabled: true })
+  newDomainInput.value = ''
+}
+
+function removeDomain(idx) {
+  managedDomainsData.value.splice(idx, 1)
+}
+
+function domainItemChange() {
+  // no-op, reactive binding handles it
+}
+
+function saveDomains() {
+  const domains = managedDomainsData.value.filter(d => d.domain)
+  editSetting({ managedDomains: domains })
+  domainManagementShow.value = false
+}
 
 function openNoticePopup() {
   uiStore.showNotice()
@@ -2203,6 +2310,69 @@ form .el-button {
 
 :deep(.el-select__wrapper) {
   min-height: 28px;
+}
+
+.domain-management {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.domain-add-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.domain-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 340px;
+  overflow-y: auto;
+  border: 1px solid var(--el-border-color-lighter);
+  border-radius: 6px;
+  padding: 4px 0;
+}
+
+.domain-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: background 0.15s;
+
+  &:hover {
+    background: var(--el-fill-color-light);
+  }
+}
+
+.domain-name {
+  font-size: 13px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.domain-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.domain-empty {
+  text-align: center;
+  color: var(--el-text-color-secondary);
+  padding: 20px 0;
+  font-size: 13px;
+}
+
+.domain-count {
+  font-size: 13px;
+  color: var(--el-text-color-secondary);
 }
 
 </style>

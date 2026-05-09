@@ -54,6 +54,7 @@ export const setting = sqliteTable('setting', {
 	emailKeywordBlacklist: text('email_keyword_blacklist').default('').notNull(),
 	senderDomainBlacklist: text('sender_domain_blacklist').default('').notNull(),
 	regKeyHint: text('reg_key_hint').default('').notNull(),
-	regKeyLink: text('reg_key_link').default('').notNull()
+	regKeyLink: text('reg_key_link').default('').notNull(),
+	managedDomains: text('managed_domains').default('').notNull()
 });
 export default setting

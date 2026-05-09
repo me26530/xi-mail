@@ -34,6 +34,7 @@ const dbInit = {
 		await this.v3_3DB(c);
 		await this.v3_4DB(c);
 		await this.v3_5DB(c);
+		await this.v3_6DB(c);
 		await settingService.refresh(c);
 		return c.text('success');
 	},
@@ -134,6 +135,12 @@ const dbInit = {
 		} catch (e) {}
 		try {
 			await c.env.db.prepare(`ALTER TABLE setting ADD COLUMN reg_key_link TEXT NOT NULL DEFAULT '';`).run();
+		} catch (e) {}
+	},
+
+	async v3_6DB(c) {
+		try {
+			await c.env.db.prepare(`ALTER TABLE setting ADD COLUMN managed_domains TEXT NOT NULL DEFAULT '';`).run();
 		} catch (e) {}
 	},
 
