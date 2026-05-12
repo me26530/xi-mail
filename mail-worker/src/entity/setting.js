@@ -55,6 +55,9 @@ export const setting = sqliteTable('setting', {
 	senderDomainBlacklist: text('sender_domain_blacklist').default('').notNull(),
 	regKeyHint: text('reg_key_hint').default('').notNull(),
 	regKeyLink: text('reg_key_link').default('').notNull(),
-	managedDomains: text('managed_domains').default('').notNull()
+	managedDomains: text('managed_domains').default('').notNull(),
+	colorTheme: text('color_theme').default('indigo').notNull(),
+	loginTemplate: text('login_template').default('gradient').notNull(),
+	layoutMode: text('layout_mode').default('default').notNull()
 });
 export default setting

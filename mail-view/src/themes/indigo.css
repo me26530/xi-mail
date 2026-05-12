@@ -1,0 +1,18 @@
+/* ═══════════════════════════════════════════════════
+   Theme: Indigo (default)
+   This is the base theme defined in :root (style.css).
+   The variables here are already set in :root and need
+   no explicit [data-color-theme] override.
+   ═══════════════════════════════════════════════════
+   Primary: #6366f1  Dark: #4f46e5
+*/
+
+/* Login gradient orb colors */
+:root {
+  --xi-orb-1: rgba(99,102,241,0.62);
+  --xi-orb-2: rgba(139,92,246,0.54);
+  --xi-orb-3: rgba(59,130,246,0.46);
+  --xi-orb-bg-top:    rgba(99,102,241,0.34);
+  --xi-orb-bg-bottom: rgba(139,92,246,0.28);
+  --xi-orb-card-border: rgba(99,102,241,0.24);
+}

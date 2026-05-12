@@ -1,11 +1,25 @@
 <template>
-  <div class="login-page" v-loading="oauthLoading" element-loading-text="登录中...">
-    <!-- Background decoration -->
+  <div :class="['login-page', 'template-' + loginTemplate]" v-loading="oauthLoading" element-loading-text="登录中...">
+    <!-- Background decoration (gradient template only) -->
     <div class="bg-layer">
       <div class="bg-orb bg-orb-1"></div>
       <div class="bg-orb bg-orb-2"></div>
       <div class="bg-orb bg-orb-3"></div>
       <div class="bg-grid"></div>
+    </div>
+
+    <!-- Split template: left brand panel -->
+    <div v-if="loginTemplate === 'split'" class="split-left">
+      <div class="split-brand">
+        <div class="split-logo">
+          <Icon icon="mingcute:mail-send-fill" width="28" height="28" />
+        </div>
+        <h1 class="split-title">{{ settingStore.settings.title }}</h1>
+        <p class="split-desc">{{ $t('loginSubTitle') }}</p>
+        <div class="split-dots">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
     </div>
 
     <!-- Centered card -->
@@ -48,7 +62,7 @@
                 <div v-if="settingStore.settings.loginDomain === 0" class="input-suffix" @click.stop="openSelect">
                   <span>{{ suffix }}</span>
                   <Icon icon="mingcute:down-line" width="11" height="11" />
-                  <el-select v-if="show === 'login'" ref="mySelect" v-model="suffix" class="hidden-select">
+                  <el-select v-if="show === 'login'" ref="mySelect" v-model="suffix" class="hidden-select" :popper-class="suffixPopperClass">
                     <el-option v-for="d in domainList" :key="d" :label="d" :value="d" />
                   </el-select>
                 </div>
@@ -92,7 +106,7 @@
                 <div class="input-suffix" @click.stop="openSelect">
                   <span>{{ suffix }}</span>
                   <Icon icon="mingcute:down-line" width="11" height="11" />
-                  <el-select v-if="show !== 'login'" ref="mySelect" v-model="suffix" class="hidden-select">
+                  <el-select v-if="show !== 'login'" ref="mySelect" v-model="suffix" class="hidden-select" :popper-class="suffixPopperClass">
                     <el-option v-for="d in domainList" :key="d" :label="d" :value="d" />
                   </el-select>
                 </div>
@@ -184,7 +198,7 @@
             <div class="input-suffix" @click.stop="openSelect">
               <span>{{ suffix }}</span>
               <Icon icon="mingcute:down-line" width="11" height="11" />
-              <el-select ref="mySelect" v-model="suffix" class="hidden-select">
+              <el-select ref="mySelect" v-model="suffix" class="hidden-select" :popper-class="suffixPopperClass">
                 <el-option v-for="d in domainList" :key="d" :label="d" :value="d" />
               </el-select>
             </div>
@@ -209,7 +223,7 @@
 
 <script setup>
 import router from "@/router";
-import {computed, nextTick, reactive, ref} from "vue";
+import {computed, nextTick, onMounted, reactive, ref} from "vue";
 import {login, register} from "@/request/login.js";
 import {isEmail} from "@/utils/verify-utils.js";
 import {useSettingStore} from "@/store/setting.js";
@@ -227,6 +241,7 @@ const accountStore = useAccountStore();
 const userStore = useUserStore();
 const uiStore = useUiStore();
 const settingStore = useSettingStore();
+const loginTemplate = computed(() => settingStore.settings?.loginTemplate || 'gradient');
 const loginLoading = ref(false);
 const bindLoading = ref(false);
 const oauthLoading = ref(false);
@@ -241,6 +256,9 @@ const mySelect = ref();
 const suffix = ref('');
 const registerForm = reactive({ email: '', password: '', confirmPassword: '', code: null });
 const domainList = settingStore.domainList;
+const suffixPopperClass = computed(() =>
+  settingStore.settings?.loginTemplate === 'gradient' ? 'xi-aurora-dropdown' : ''
+);
 const registerLoading = ref(false);
 suffix.value = domainList[0];
 const verifyShow = ref(false);
@@ -386,6 +404,30 @@ function submitRegister() {
 
 <style>
 .el-select-dropdown__item { padding: 0 15px; }
+
+/* ── Aurora template: dark suffix dropdown ── */
+.xi-aurora-dropdown {
+  background: #16121e !important;
+  border-color: rgba(255, 255, 255, 0.10) !important;
+}
+.xi-aurora-dropdown .el-select-dropdown__list {
+  padding: 4px 0;
+}
+.xi-aurora-dropdown .el-select-dropdown__item {
+  color: rgba(240, 240, 255, 0.80);
+}
+.xi-aurora-dropdown .el-select-dropdown__item.is-hovering {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #f0f0ff;
+}
+.xi-aurora-dropdown .el-select-dropdown__item.is-selected {
+  color: var(--el-color-primary);
+  font-weight: 600;
+}
+.xi-aurora-dropdown .el-popper__arrow::before {
+  background: #16121e !important;
+  border-color: rgba(255, 255, 255, 0.10) !important;
+}
 </style>
 
 <style lang="scss" scoped>
@@ -783,7 +825,7 @@ function submitRegister() {
   height: 37px;
   border: none;
   border-radius: 9px;
-  background: linear-gradient(135deg, #6366f1 0%, #7c3aed 100%);
+  background: var(--xi-gradient);
   color: #fff;
   font-size: 13.5px;
   font-weight: 600;
@@ -793,19 +835,19 @@ function submitRegister() {
   justify-content: center;
   gap: 8px;
   transition: all 0.2s;
-  box-shadow: 0 2px 10px rgba(99, 102, 241, 0.28), 0 0 0 1px rgba(99,102,241,0.12);
+  box-shadow: var(--xi-shadow-md), 0 0 0 1px rgba(0,0,0,0.08);
   margin-top: 2px;
   letter-spacing: 0.01em;
 
   &:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 5px 18px rgba(99, 102, 241, 0.36), 0 0 0 1px rgba(99,102,241,0.16);
-    background: linear-gradient(135deg, #4f46e5 0%, #6d28d9 100%);
+    box-shadow: var(--xi-shadow-lg), 0 0 0 1px rgba(0,0,0,0.10);
+    background: var(--xi-gradient-hover);
   }
 
   &:active:not(:disabled) {
     transform: translateY(0);
-    box-shadow: 0 1px 6px rgba(99, 102, 241, 0.22);
+    box-shadow: var(--xi-shadow-sm);
   }
 
   &:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -896,4 +938,15 @@ function submitRegister() {
   padding: 0 8px;
   background: var(--el-bg-color);
 }
+
+/* ── Login page templates — each in its own file ──
+   To add/modify a template: edit templates/*.scss
+   To add a new template: create templates/xxx.scss
+   and import it below, then add the CSS class + Vue logic.
+   ── */
+// stylelint-disable
+/* Login page templates — edit templates/*.scss to customize */
+@import './templates/gradient';
+@import './templates/minimal';
+@import './templates/split';
 </style>

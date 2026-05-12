@@ -256,7 +256,10 @@ const settingService = {
 		domainMapping: settingRow.domainMapping || {},
 		regKeyHint: settingRow.regKeyHint || '',
 		regKeyLink: settingRow.regKeyLink || '',
-		managedDomains: settingRow.managedDomains || []
+		managedDomains: settingRow.managedDomains || [],
+		colorTheme: settingRow.colorTheme || 'indigo',
+		loginTemplate: settingRow.loginTemplate || 'gradient',
+		layoutMode: settingRow.layoutMode || 'default'
 		};
 	}
 };

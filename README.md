@@ -17,6 +17,30 @@
 
 ---
 
+## 📸 界面预览
+
+| 系统设置 | 外观 / 主题 |
+|:---:|:---:|
+| ![系统设置](doc/images/system-setting-view.png) | ![主题外观](doc/images/system-setting-theme.png) |
+| **数据分析** | **邮箱转移** |
+| ![数据分析](doc/images/analysis-view.png) | ![邮箱转移](doc/images/transfer-view.png) |
+
+> 更多截图见 [doc/images/](doc/images/)
+
+---
+
+## 🔑 在线体验
+
+> 演示站：[https://mail.azx.us](https://mail.azx.us)
+
+测试账号使用注册码注册，仅限 `@nlfree.me` 后缀，**仅供系统预览，请勿存放真实邮件**：
+
+| 注册码 | 可用域名 | 说明 |
+|--------|----------|------|
+| `viewUser` | `@nlfree.me` | 普通用户体验账号 |
+
+---
+
 ## 📖 项目简介
 
 Xi-Mail 是基于 **Cloudflare Workers / D1 / KV / R2** 构建的全栈自托管邮箱服务，在 [cloud-mail](https://github.com/eoao/cloud-mail) 开源项目基础上进行二次开发，带来全面 UI 重设计与一系列新功能。
@@ -29,8 +53,9 @@ Xi-Mail 是基于 **Cloudflare Workers / D1 / KV / R2** 构建的全栈自托管
 
 ### 🎨 UI 全面重设计（Linear 风格）
 - 采用 **TailwindCSS 4** + **@vueuse/motion** 动画库重构前端样式系统
-- 登录 / 注册页：磨砂玻璃卡片 + 动态渐变背景光晕 + 网格装饰
-- 侧边栏：深色极简风格，图标统一
+- 登录 / 注册页：3 套模板（极光 / 简约 / 分栏），6 套主题色预设，系统设置可一键切换并持久化
+- 登录后布局：完整侧边栏 / 精简侧边栏（仅图标）/ 顶栏导航，三种模式自由切换
+- 侧边栏：深色极简风格，图标统一；精简模式宽度收缩至 56px 并显示 Tooltip
 - 顶栏：紧凑布局，渐变 Compose 按钮，用户信息面板优化
 - 全局设计 Token：indigo-violet 渐变色系、彩色阴影、统一圆角
 - **顶栏语言切换按钮**：一键切换中文 / 英文界面，实时生效并持久化保存
@@ -41,12 +66,14 @@ Xi-Mail 是基于 **Cloudflare Workers / D1 / KV / R2** 构建的全栈自托管
 - **邮箱转移**：用户可将邮箱账户及其全部邮件转移给其他用户（通过 Display ID 指定），接收方可确认或拒绝
 
 ### 📬 账号管理优化
-- 收件箱 / 已发送页侧边栏账号列表：新增搜索过滤，显示完整邮件地址（便于多账号区分）
+- 收件箱 / 已发送页侧边栏账号列表：新增搜索过滤，显示完整邮件地址，账号上限提升至 100 个
 - 账号操作下拉菜单始终可见（含邮箱转移入口）
 - **已发送 / 草稿箱**：无发送权限或角色被禁止发送时，侧边栏自动隐藏这两个菜单项
+- **邮箱可重建**：已删除的邮箱可重新创建（自动恢复历史数据）
 
 ### 🔄 转移功能页（`/transfer`）
 - 独立侧边栏页面，支持发起转移、查看待处理 / 已发送转移请求
+- **已处理收到记录**：保留所有已接受 / 已拒绝的传入请求历史，不再消失
 - 顶栏 Badge 实时显示待处理数量
 
 ### 🛡️ 权限系统重设计
@@ -59,17 +86,14 @@ Xi-Mail 是基于 **Cloudflare Workers / D1 / KV / R2** 构建的全栈自托管
 - 用户关联邮箱账号支持批量删除
 
 ### ⚙️ 系统设置增强
-- **全局 API Token**：管理员可开启并生成全局 Token，通过 `x-admin-auth` 请求头无需登录直接查询指定邮箱的邮件（`GET /api/admin/mails`）
-- **邮件地址关键词黑名单**：防止普通用户注册含 `admin` 等敏感词的邮箱地址（管理员可跳过检查）
-- **发件人域名黑名单**：屏蔽来自指定域名的发件人，系统直接拒绝其邮件，有效防御邮件轰炸
-- **Turnstile 人机验证管理员免验**：开启 Turnstile 后管理员注册 / 添加邮箱无需完成人机验证
-- **注册码提示与获取链接**：启用注册码后可配置提示文字（如"联系管理员获取"）及跳转链接，方便新用户了解如何获取注册码
-- 公告弹窗美化：居中 Dialog 展示，自定义标题 / 宽度 / 内容，移除冗余的位置 / 偏移等过时配置
-- 域名映射 UI 优化（展示系统已有域名供快速选择）
-- 自动封禁设置对齐修复，移除冗余的"登录背景"和"登录透明度"配置
+- **外观模板系统**：系统设置重构为「左侧导航 + 右侧内容」双栏布局，分 7 个分区（网站 / 安全 / 注册 / 域名 / 服务集成 / 外观 / 关于）
+- **域名在线管理**：无需修改 `wrangler.toml`，直接在系统设置中新增、删除、启用 / 禁用邮箱域名，配置完成后 `domain` 变量可留空
+- **全局 API Token**：管理员可开启并生成全局 Token，通过 `x-admin-auth` 请求头无需登录直接查询邮件
+- **邮件地址关键词黑名单** + **发件人域名黑名单**：防注册敏感词 / 防邮件轰炸
+- **注册码提示与获取链接**：启用注册码后可配置提示文字及跳转链接
 
-### 🔍 操作提示完善
-- 所有操作图标（搜索、刷新、排序、批量操作等）统一补全 Tooltip 悬浮提示
+### 🔎 搜索增强
+- **用户管理子账号搜索**：在 `/all-users` 搜索邮箱时，可同时匹配该用户名下创建的所有子账号邮箱
 
 ---
 
@@ -107,15 +131,18 @@ xi-mail/
 │   │   └── index.js             # Worker 入口
 │   └── wrangler.example.toml    # 配置模板（复制为 wrangler.toml 后填写）
 │
-└── mail-view/                   # Vue 3 前端
-    ├── src/
-    │   ├── layout/              # 布局组件（侧边栏 / 顶栏 / 账号栏）
-    │   ├── views/               # 页面组件
-    │   ├── components/          # 通用组件
-    │   ├── store/               # Pinia 状态管理
-    │   ├── i18n/                # 国际化（zh / en）
-    │   └── style.css            # 全局样式 / 设计 Token
-    └── vite.config.js
+├── mail-view/                   # Vue 3 前端
+│   ├── src/
+│   │   ├── layout/              # 布局组件（侧边栏 / 顶栏 / 顶栏导航）
+│   │   ├── views/               # 页面组件
+│   │   │   └── login/templates/ # 登录模板 CSS（gradient / minimal / split）
+│   │   ├── themes/              # 主题色 CSS（indigo / rose / emerald / amber / sky / purple）
+│   │   ├── store/               # Pinia 状态管理
+│   │   ├── i18n/                # 国际化（zh / en）
+│   │   └── style.css            # 全局样式 / 设计 Token
+│   └── vite.config.js
+│
+└── doc/images/                  # 截图预览
 ```
 
 ---
@@ -152,7 +179,7 @@ cd ../mail-view
 npm install
 npm run build
 
-# 6. 初始化数据库并部署
+# 6. 部署
 cd ../mail-worker
 npx wrangler deploy
 
@@ -164,7 +191,7 @@ npx wrangler deploy
 
 ```toml
 [vars]
-domain      = ["mail.example.com"]   # 邮箱域名列表（JSON 数组）
+domain      = ["mail.example.com"]   # 邮箱域名列表（JSON 数组）；在系统设置中配置域名管理后可留空
 admin       = "admin@example.com"    # 管理员邮箱（首次初始化后无法更改）
 jwt_secret  = "your-secret"          # JWT 签名密钥（至少 32 位随机字符串）
 ```

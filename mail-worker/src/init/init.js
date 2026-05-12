@@ -35,6 +35,8 @@ const dbInit = {
 		await this.v3_4DB(c);
 		await this.v3_5DB(c);
 		await this.v3_6DB(c);
+		await this.v3_7DB(c);
+		await this.v3_8DB(c);
 		await settingService.refresh(c);
 		return c.text('success');
 	},
@@ -141,6 +143,21 @@ const dbInit = {
 	async v3_6DB(c) {
 		try {
 			await c.env.db.prepare(`ALTER TABLE setting ADD COLUMN managed_domains TEXT NOT NULL DEFAULT '';`).run();
+		} catch (e) {}
+	},
+
+	async v3_7DB(c) {
+		try {
+			await c.env.db.prepare(`ALTER TABLE setting ADD COLUMN color_theme TEXT NOT NULL DEFAULT 'indigo';`).run();
+		} catch (e) {}
+		try {
+			await c.env.db.prepare(`ALTER TABLE setting ADD COLUMN login_template TEXT NOT NULL DEFAULT 'gradient';`).run();
+		} catch (e) {}
+	},
+
+	async v3_8DB(c) {
+		try {
+			await c.env.db.prepare(`ALTER TABLE setting ADD COLUMN layout_mode TEXT NOT NULL DEFAULT 'default';`).run();
 		} catch (e) {}
 	},
 

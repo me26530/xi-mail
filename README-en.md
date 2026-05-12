@@ -41,12 +41,14 @@ With just a single domain managed by Cloudflare, you can deploy a full-featured 
 - **Account Transfer**: Users can transfer an email account (along with all its emails) to another user by Display ID; the recipient can accept or reject
 
 ### 📬 Account Management Improvements
-- Inbox / Sent sidebar: search/filter support, shows full email address for easy multi-account distinction
+- Inbox / Sent sidebar: search/filter support, shows full email address for easy multi-account distinction; account list limit raised to 100
 - Account actions dropdown always visible (includes Transfer entry)
 - **Sent / Drafts menu items**: automatically hidden in the sidebar when the user has no send permission or the role is banned from sending
+- **Re-create deleted email accounts**: soft-deleted email addresses can be re-registered and their associated data is automatically restored
 
 ### 🔄 Transfer Page (`/transfer`)
 - Dedicated sidebar page to initiate transfers and manage pending / sent transfer requests
+- **Received history**: All accepted / rejected incoming transfer requests are preserved in a separate history section — they no longer disappear after processing
 - Header badge shows real-time pending count
 
 ### 🛡️ Permission System Redesign
@@ -59,6 +61,7 @@ With just a single domain managed by Cloudflare, you can deploy a full-featured 
 - Batch delete email accounts associated with a user
 
 ### ⚙️ System Settings Enhancements
+- **Web-based domain management**: Add, delete, enable, or disable email domains directly in the System Settings UI — no need to edit `wrangler.toml`. The `domain` variable in `wrangler.toml` can be left empty once domains are configured here
 - **Global API Token**: Admins can enable and generate a global token; use the `x-admin-auth` header to query emails via API without login (`GET /api/admin/mails`)
 - **Email keyword blocklist**: Prevents regular users from registering email addresses containing sensitive keywords like `admin` (admins bypass this check)
 - **Sender domain blacklist**: Block emails from specified sender domains; the system rejects them immediately to defend against email bombing attacks
@@ -70,6 +73,9 @@ With just a single domain managed by Cloudflare, you can deploy a full-featured 
 
 ### 🔍 Tooltip Coverage
 - All action icons (search, refresh, sort, batch operations, etc.) now have consistent Tooltip hints on hover
+
+### 🔎 Search Enhancements
+- **Sub-account email search in User Management**: When searching in `/all-users`, the query matches not only the primary email but also all sub-account emails created by the user (e.g. searching `zjp2i3kzvz8m@domain.com` will surface the owning primary account)
 
 ---
 
@@ -164,7 +170,7 @@ npx wrangler deploy
 
 ```toml
 [vars]
-domain      = ["mail.example.com"]   # Email domain list (JSON array)
+domain      = ["mail.example.com"]   # Email domain list (JSON array); can be left empty once configured via the web Domain Management UI
 admin       = "admin@example.com"    # Admin email (cannot be changed after init)
 jwt_secret  = "your-secret"          # JWT signing key (min 32 random characters)
 ```

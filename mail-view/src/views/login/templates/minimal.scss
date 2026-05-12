@@ -1,0 +1,55 @@
+/* ═══════════════════════════════════════════
+   Login Template: minimal (简约)
+   Pure white background, zero decoration.
+   Dark mode: flat dark card.
+   ═══════════════════════════════════════════ */
+.template-minimal {
+  background: #ffffff;
+
+  .bg-layer { display: none; }
+
+  .auth-card {
+    background: #ffffff;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .tab-bar { background: #f3f4f6; }
+
+  .tab.active {
+    background: #fff;
+    color: var(--el-color-primary);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  .input-main, .input-group {
+    border-color: #d1d5db;
+    background: #fff;
+    &:focus-within { border-color: var(--el-color-primary); }
+  }
+
+  .primary-btn {
+    background: var(--el-color-primary);
+    &:hover { background: var(--el-color-primary-dark-2); }
+  }
+}
+
+:global(.dark) .template-minimal {
+  background: #0f0f13;
+
+  .auth-card {
+    background: #18181c;
+    border-color: #2a2a30;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.2);
+  }
+
+  .tab-bar { background: #1e1e24; }
+
+  .input-main, .input-group {
+    border-color: #3f3f46;
+    background: #1e1e24;
+  }
+}

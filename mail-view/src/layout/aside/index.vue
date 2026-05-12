@@ -1,52 +1,67 @@
 <template>
-  <div class="aside-root">
+  <div class="aside-root" :class="{ compact: isCompact }">
     <div class="aside-header">
       <div class="logo-mark">
         <Icon icon="mingcute:mail-send-fill" width="18" height="18" />
       </div>
-      <div class="logo-text">{{ settingStore.settings.title }}</div>
+      <div v-if="!isCompact" class="logo-text">{{ settingStore.settings.title }}</div>
     </div>
 
     <el-scrollbar class="aside-scroll">
       <nav class="nav-section">
-        <template v-for="item in mainNav" :key="item.name">
-        <div
-          v-if="item.sendOnly ? canSend : (!item.perm || hasPerm(item.perm))"
-          class="nav-item"
-          :class="{ active: route.meta.name === item.name }"
-          @click="router.push({ name: item.name })"
+        <el-tooltip
+          v-for="item in mainNav"
+          :key="item.name"
+          :disabled="!isCompact"
+          :content="$t(item.label)"
+          placement="right"
+          :show-after="100"
         >
-          <div class="nav-icon-wrap">
-            <Icon :icon="item.icon" :width="item.size || 18" :height="item.size || 18" />
-            <el-badge
-              v-if="item.name === 'transfer' && transferStore.pendingCount > 0"
-              :value="transferStore.pendingCount"
-              class="nav-badge"
-            />
+          <div
+            v-if="item.sendOnly ? canSend : (!item.perm || hasPerm(item.perm))"
+            class="nav-item"
+            :class="{ active: route.meta.name === item.name }"
+            @click="router.push({ name: item.name })"
+          >
+            <div class="nav-icon-wrap">
+              <Icon :icon="item.icon" :width="item.size || 18" :height="item.size || 18" />
+              <el-badge
+                v-if="item.name === 'transfer' && transferStore.pendingCount > 0"
+                :value="transferStore.pendingCount"
+                class="nav-badge"
+              />
+            </div>
+            <span v-if="!isCompact" class="nav-label">{{ $t(item.label) }}</span>
           </div>
-          <span class="nav-label">{{ $t(item.label) }}</span>
-        </div>
-        </template>
+        </el-tooltip>
       </nav>
 
       <div class="nav-divider" v-perm="['all-email:query','user:query','role:query','setting:query','analysis:query','reg-key:query']">
-        <span class="divider-text">{{ $t('manage') }}</span>
+        <span v-if="!isCompact" class="divider-text">{{ $t('manage') }}</span>
+        <div v-else class="divider-line"></div>
       </div>
 
       <nav class="nav-section">
-        <div
+        <el-tooltip
           v-for="item in adminNav"
           :key="item.name"
-          class="nav-item"
-          :class="{ active: route.meta.name === item.name }"
-          @click="router.push({ name: item.name })"
-          v-perm="item.perm"
+          :disabled="!isCompact"
+          :content="$t(item.label)"
+          placement="right"
+          :show-after="100"
         >
-          <div class="nav-icon-wrap">
-            <Icon :icon="item.icon" :width="item.size || 18" :height="item.size || 18" />
+          <div
+            class="nav-item"
+            :class="{ active: route.meta.name === item.name }"
+            @click="router.push({ name: item.name })"
+            v-perm="item.perm"
+          >
+            <div class="nav-icon-wrap">
+              <Icon :icon="item.icon" :width="item.size || 18" :height="item.size || 18" />
+            </div>
+            <span v-if="!isCompact" class="nav-label">{{ $t(item.label) }}</span>
           </div>
-          <span class="nav-label">{{ $t(item.label) }}</span>
-        </div>
+        </el-tooltip>
       </nav>
     </el-scrollbar>
   </div>
@@ -65,6 +80,7 @@ import { hasPerm } from "@/perm/perm.js";
 
 const settingStore = useSettingStore();
 const userStore = useUserStore();
+const isCompact = computed(() => settingStore.settings?.layoutMode === 'compact');
 const transferStore = useTransferStore();
 const route = useRoute();
 
@@ -107,6 +123,38 @@ transferPendingList().then(list => {
   flex-direction: column;
   background: var(--aside-backgound);
   user-select: none;
+  transition: width 0.22s ease;
+
+  &.compact {
+    width: 56px;
+
+    .aside-header {
+      padding: 20px 0 16px;
+      justify-content: center;
+    }
+
+    .nav-section { padding: 0 6px; }
+
+    .nav-item {
+      padding: 0;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .nav-icon-wrap { width: 100%; justify-content: center; }
+
+    .nav-divider {
+      padding: 10px 8px 6px;
+      display: flex;
+      justify-content: center;
+    }
+  }
+}
+
+.divider-line {
+  width: 24px;
+  height: 1px;
+  background: #3f3f46;
 }
 
 .aside-header {

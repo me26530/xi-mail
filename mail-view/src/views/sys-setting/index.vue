@@ -3,11 +3,29 @@
     <div class="loading" :class="firstLoading ? 'loading-show' : 'loading-hide'">
       <loading/>
     </div>
-    <el-scrollbar class="scroll" v-if="!firstLoading">
-      <div class="scroll-body">
-        <div class="card-grid">
-          <!-- Website Settings Card -->
-          <div class="settings-card">
+    <div class="settings-layout" v-if="!firstLoading">
+
+      <!-- Left navigation -->
+      <div class="settings-nav">
+        <div
+          v-for="sec in sections"
+          :key="sec.id"
+          class="sn-item"
+          :class="{ active: activeSection === sec.id }"
+          @click="activeSection = sec.id"
+        >
+          <Icon :icon="sec.icon" width="16" height="16" />
+          <span>{{ $t(sec.label) }}</span>
+        </div>
+      </div>
+
+      <!-- Right content -->
+      <el-scrollbar class="settings-body">
+        <div class="sb-inner">
+
+          <!-- ── Section: website ── -->
+          <div v-show="activeSection === 'website'">
+            <div class="settings-card">
             <div class="card-title">{{ $t('websiteSetting') }}</div>
             <div class="card-content">
               <div class="setting-item">
@@ -107,9 +125,12 @@
             </div>
           </div>
 
-          <!-- Security Settings Card -->
-          <div class="settings-card">
-            <div class="card-title">{{ $t('securitySetting') }}</div>
+          </div><!-- /section website -->
+
+          <!-- ── Section: security ── -->
+          <div v-show="activeSection === 'security'">
+            <div class="settings-card">
+              <div class="card-title">{{ $t('securitySetting') }}</div>
             <div class="card-content">
               <div class="setting-item">
                 <div>
@@ -227,9 +248,12 @@
             </div>
           </div>
 
-          <!-- Email Address Settings Card -->
-          <div class="settings-card">
-            <div class="card-title">{{ $t('emailAddressSetting') }}</div>
+          </div><!-- /section security -->
+
+          <!-- ── Section: registration ── -->
+          <div v-show="activeSection === 'registration'">
+            <div class="settings-card">
+              <div class="card-title">{{ $t('emailAddressSetting') }}</div>
             <div class="card-content">
               <div class="setting-item">
                 <div>
@@ -337,9 +361,12 @@
             </div>
           </div>
 
-          <!-- Domain Management Card -->
-          <div class="settings-card">
-            <div class="card-title">{{ $t('domainManagement') }}</div>
+          </div><!-- /section registration -->
+
+          <!-- ── Section: domain ── -->
+          <div v-show="activeSection === 'domain'">
+            <div class="settings-card">
+              <div class="card-title">{{ $t('domainManagement') }}</div>
             <div class="card-content">
               <div class="setting-item">
                 <div>
@@ -358,9 +385,12 @@
             </div>
           </div>
 
-          <!-- Object Storage Card -->
-          <div class="settings-card">
-            <div class="card-title">{{ $t('oss') }}</div>
+          </div><!-- /section domain -->
+
+          <!-- ── Section: integration ── -->
+          <div v-show="activeSection === 'integration'">
+            <div class="settings-card">
+              <div class="card-title">{{ $t('oss') }}</div>
             <div class="card-content">
               <div class="r2domain-item">
                 <div>
@@ -518,8 +548,121 @@
             </div>
           </div>
 
-          <div class="settings-card about">
-            <div class="card-title">{{ $t('about') }}</div>
+          </div><!-- /section integration -->
+
+          <!-- ── Section: appearance ── -->
+          <div v-show="activeSection === 'appearance'">
+            <div class="settings-card appearance-card">
+            <div class="card-title">{{ $t('appearance') }}</div>
+            <div class="card-content">
+              <!-- Color themes -->
+              <div class="setting-item appearance-block">
+                <div><span>{{ $t('colorTheme') }}</span></div>
+                <div class="theme-swatches">
+                  <button
+                    v-for="theme in colorThemes"
+                    :key="theme.id"
+                    :class="['swatch', { active: setting.colorTheme === theme.id }]"
+                    :style="{ background: theme.color }"
+                    :title="theme.label"
+                    @click="applyColorTheme(theme.id)"
+                  >
+                    <Icon v-if="setting.colorTheme === theme.id" icon="mingcute:check-fill" width="14" height="14" color="#fff" />
+                  </button>
+                </div>
+              </div>
+              <!-- Layout mode -->
+              <div class="setting-item appearance-block">
+                <div><span>{{ $t('layoutMode') }}</span></div>
+                <div class="layout-options">
+                  <button
+                    v-for="mode in layoutModes"
+                    :key="mode.id"
+                    :class="['layout-opt', { active: setting.layoutMode === mode.id }]"
+                    @click="applyLayoutMode(mode.id)"
+                  >
+                    <!-- default: full sidebar preview -->
+                    <div v-if="mode.id === 'default'" class="layout-preview lp-default">
+                      <div class="lp-sidebar">
+                        <div class="lp-sb-item lp-sb-full"></div>
+                        <div class="lp-sb-item lp-sb-full"></div>
+                        <div class="lp-sb-item lp-sb-full"></div>
+                      </div>
+                      <div class="lp-content">
+                        <div class="lp-top-bar"></div>
+                        <div class="lp-body"></div>
+                      </div>
+                    </div>
+                    <!-- compact: icon-only sidebar preview -->
+                    <div v-else-if="mode.id === 'compact'" class="layout-preview lp-compact">
+                      <div class="lp-sidebar lp-sidebar-sm">
+                        <div class="lp-sb-item lp-sb-dot"></div>
+                        <div class="lp-sb-item lp-sb-dot"></div>
+                        <div class="lp-sb-item lp-sb-dot"></div>
+                      </div>
+                      <div class="lp-content">
+                        <div class="lp-top-bar"></div>
+                        <div class="lp-body"></div>
+                      </div>
+                    </div>
+                    <!-- top: horizontal nav preview -->
+                    <div v-else class="layout-preview lp-top">
+                      <div class="lp-full-col">
+                        <div class="lp-hbar">
+                          <div class="lp-h-dot"></div>
+                          <div class="lp-h-dot"></div>
+                          <div class="lp-h-dot"></div>
+                          <div class="lp-h-dot"></div>
+                        </div>
+                        <div class="lp-top-bar"></div>
+                        <div class="lp-body"></div>
+                      </div>
+                    </div>
+                    <span class="tpl-label">{{ mode.label }}</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Login templates -->
+              <div class="setting-item appearance-block">
+                <div><span>{{ $t('loginTemplate') }}</span></div>
+                <div class="template-previews">
+                  <button
+                    v-for="tpl in loginTemplates"
+                    :key="tpl.id"
+                    :class="['tpl-card', { active: setting.loginTemplate === tpl.id }]"
+                    @click="applyLoginTemplate(tpl.id)"
+                  >
+                    <!-- Gradient preview -->
+                    <div v-if="tpl.id === 'gradient'" class="tpl-preview tpl-gradient">
+                      <div class="tpl-orb tpl-orb-1"></div>
+                      <div class="tpl-orb tpl-orb-2"></div>
+                      <div class="tpl-card-inner"></div>
+                    </div>
+                    <!-- Minimal preview -->
+                    <div v-else-if="tpl.id === 'minimal'" class="tpl-preview tpl-minimal">
+                      <div class="tpl-card-inner tpl-minimal-card"></div>
+                    </div>
+                    <!-- Split preview -->
+                    <div v-else class="tpl-preview tpl-split">
+                      <div class="tpl-split-left"></div>
+                      <div class="tpl-split-right">
+                        <div class="tpl-card-inner tpl-split-card"></div>
+                      </div>
+                    </div>
+                    <span class="tpl-label">{{ tpl.label }}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          </div><!-- /section appearance -->
+
+          <!-- ── Section: about ── -->
+          <div v-show="activeSection === 'about'">
+            <div class="settings-card about">
+              <div class="card-title">{{ $t('about') }}</div>
             <div class="card-content">
               <div class="concerning-item">
                 <span>{{ $t('version') }} :</span>
@@ -577,11 +720,14 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
+          </div><!-- /about card -->
+          </div><!-- /section about -->
 
-      <!-- Dialogs remain the same -->
+        </div><!-- /sb-inner -->
+      </el-scrollbar><!-- /settings-body -->
+    </div><!-- /settings-layout -->
+
+    <!-- Dialogs -->
       <el-dialog v-model="editTitleShow" :title="$t('changeTitle')" width="340" @closed="editTitle = setting.title">
         <form>
           <el-input type="text" :placeholder="$t('websiteTitle')" v-model="editTitle"/>
@@ -920,7 +1066,6 @@
           <el-button type="primary" style="width: 100%;" :loading="settingLoading" @click="saveSenderDomainBlacklist">{{ $t('save') }}</el-button>
         </div>
       </el-dialog>
-    </el-scrollbar>
   </div>
 </template>
 
@@ -943,7 +1088,20 @@ defineOptions({
   name: 'sys-setting'
 })
 
-const currentVersion = 'v1.0.6'
+const currentVersion = 'v2.0.1'
+
+/* ── Settings navigation ── */
+const activeSection = ref('website')
+
+const sections = computed(() => [
+  { id: 'website',     icon: 'mingcute:home-4-line',      label: 'websiteSetting' },
+  { id: 'security',    icon: 'mingcute:shield-line',       label: 'securitySetting' },
+  { id: 'registration',icon: 'mingcute:user-add-line',     label: 'emailAddressSetting' },
+  { id: 'domain',      icon: 'mingcute:world-2-line',      label: 'domainManagement' },
+  { id: 'integration', icon: 'mingcute:plug-2-line',       label: 'integration' },
+  { id: 'appearance',  icon: 'mingcute:palette-line',      label: 'appearance' },
+  { id: 'about',       icon: 'mingcute:information-line',  label: 'about' },
+])
 const hasUpdate = ref(false)
 let getUpdateErrorCount = 1;
 const {t, locale} = useI18n();
@@ -984,6 +1142,43 @@ const newDomainInput = ref('')
 const systemDomains = computed(() => {
   return (settingStore.domainList || []).map(d => d.replace(/^@/, ''))
 })
+
+const colorThemes = computed(() => [
+  { id: 'indigo',  color: '#6366f1', label: 'Indigo'  },
+  { id: 'rose',    color: '#f43f5e', label: 'Rose'    },
+  { id: 'emerald', color: '#10b981', label: 'Emerald' },
+  { id: 'amber',   color: '#f59e0b', label: 'Amber'   },
+  { id: 'sky',     color: '#0ea5e9', label: 'Sky'     },
+  { id: 'purple',  color: '#a855f7', label: 'Purple'  },
+])
+
+const loginTemplates = computed(() => [
+  { id: 'gradient', label: t('templateGradient') },
+  { id: 'minimal',  label: t('templateMinimal')  },
+  { id: 'split',    label: t('templateSplit')     },
+])
+
+function applyColorTheme(id) {
+  setting.value.colorTheme = id
+  document.documentElement.dataset.colorTheme = id
+  editSetting({ colorTheme: id })
+}
+
+function applyLoginTemplate(id) {
+  setting.value.loginTemplate = id
+  editSetting({ loginTemplate: id })
+}
+
+const layoutModes = computed(() => [
+  { id: 'default', label: t('layoutDefault') },
+  { id: 'compact', label: t('layoutCompact') },
+  { id: 'top',     label: t('layoutTop') },
+])
+
+function applyLayoutMode(id) {
+  setting.value.layoutMode = id
+  editSetting({ layoutMode: id })
+}
 let regVerifyCount = ref(1)
 let addVerifyCount = ref(1)
 let backup = '{}'
@@ -1132,6 +1327,10 @@ function getSettings() {
       }))
     }
     firstLoading.value = false
+    // Apply saved color theme immediately in settings page
+    if (setting.value.colorTheme) {
+      document.documentElement.dataset.colorTheme = setting.value.colorTheme
+    }
     editTitle.value = setting.value.title
     r2DomainInput.value = setting.value.r2Domain
     addVerifyCount.value = setting.value.addVerifyCount
@@ -1611,35 +1810,73 @@ function editSetting(settingForm, refreshStatus = true) {
   }
 }
 
-.scroll {
-  width: 100%;
-  min-height: 100%;
+/* ── Two-column settings layout ── */
+.settings-layout {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+}
 
-  :deep(.el-scrollbar__view) {
-    height: 100%;
-  }
+/* Left navigation */
+.settings-nav {
+  width: 180px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--el-border-color-lighter);
+  background: var(--el-bg-color);
+  padding: 16px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
 
-  .scroll-body {
-    min-height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  @media (max-width: 700px) {
+    width: 52px;
+
+    .sn-label { display: none; }
+    .sn-item  { justify-content: center; padding: 0; }
   }
 }
 
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+.sn-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 450;
+  color: var(--el-text-color-regular);
+  transition: all 0.13s ease;
+
+  &:hover {
+    background: var(--el-fill-color);
+    color: var(--el-text-color-primary);
+  }
+
+  &.active {
+    background: var(--el-color-primary-light-9);
+    color: var(--el-color-primary);
+    font-weight: 550;
+  }
+}
+
+/* Right content */
+.settings-body {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+}
+
+.sb-inner {
   padding: 24px;
-  gap: 20px;
-  @media (max-width: 500px) {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    padding: 16px;
-  }
-  @media (max-width: 1023px) {
-    gap: 16px;
-    padding: 16px;
-  }
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  @media (max-width: 700px) { padding: 16px; }
 }
 
 .background {
@@ -2375,9 +2612,276 @@ form .el-button {
   color: var(--el-text-color-secondary);
 }
 
+/* ── Appearance Card ── */
+.appearance-block {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  border-bottom: none;
+  padding-bottom: 4px;
+}
+
+.theme-swatches {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.swatch {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s, box-shadow 0.15s;
+  outline: none;
+
+  &:hover { transform: scale(1.12); }
+
+  &.active {
+    border-color: var(--el-color-primary);
+    box-shadow: 0 0 0 2px var(--el-bg-color), 0 0 0 4px var(--el-color-primary);
+  }
+}
+
+.template-previews {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tpl-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+
+  .tpl-preview {
+    width: 88px;
+    height: 56px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 2px solid var(--el-border-color-lighter);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    position: relative;
+  }
+
+  &.active .tpl-preview {
+    border-color: var(--el-color-primary);
+    box-shadow: 0 0 0 1px var(--el-color-primary);
+  }
+
+  &:hover .tpl-preview {
+    border-color: var(--el-color-primary-light-3);
+  }
+}
+
+.tpl-label {
+  font-size: 11px;
+  color: var(--el-text-color-secondary);
+}
+
+/* gradient preview — Aurora style */
+.tpl-gradient {
+  background: #05050d;
+  position: relative;
+  overflow: hidden;
+
+  /* Big corner aurora blobs (mimics the real template) */
+  &::before {
+    content: '';
+    position: absolute;
+    width: 200%; height: 150%;
+    top: -80%; right: -80%;
+    background: radial-gradient(circle at 40% 40%,
+      var(--xi-orb-1, rgba(99,102,241,0.55)) 0%, transparent 60%
+    );
+    filter: blur(20px);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 160%; height: 140%;
+    bottom: -80%; left: -60%;
+    background: radial-gradient(circle at 60% 60%,
+      var(--xi-orb-2, rgba(139,92,246,0.48)) 0%, transparent 60%
+    );
+    filter: blur(18px);
+  }
+
+  .tpl-orb { display: none; }   /* not needed — ::before/after handle it */
+
+  .tpl-card-inner {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 48px; height: 34px;
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(6px);
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.12);
+    z-index: 1;
+  }
+}
+
+/* layout mode selector */
+.layout-options {
+  display: flex;
+  gap: 12px;
+}
+
+.layout-opt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+
+  .layout-preview {
+    width: 88px;
+    height: 56px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 2px solid var(--el-border-color-lighter);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    display: flex;
+    background: var(--el-fill-color-light);
+  }
+
+  &.active .layout-preview {
+    border-color: var(--el-color-primary);
+    box-shadow: 0 0 0 1px var(--el-color-primary);
+  }
+
+  &:hover .layout-preview {
+    border-color: var(--el-color-primary-light-3);
+  }
+}
+
+.lp-sidebar {
+  width: 28px;
+  background: #1a1a22;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 5px;
+}
+
+.lp-sidebar-sm {
+  width: 14px;
+  align-items: center;
+  padding: 8px 3px;
+}
+
+.lp-sb-item { border-radius: 2px; background: #3f3f52; }
+.lp-sb-full { height: 5px; width: 100%; }
+.lp-sb-dot  { height: 5px; width: 5px; border-radius: 50%; }
+
+.lp-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  gap: 4px;
+}
+
+.lp-top-bar {
+  height: 6px;
+  background: var(--el-border-color-lighter);
+  border-radius: 2px;
+}
+
+.lp-body {
+  flex: 1;
+  background: var(--el-fill-color-extra-light);
+  border-radius: 2px;
+}
+
+/* top nav layout preview */
+.lp-top { flex-direction: column; }
+
+.lp-full-col {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  gap: 4px;
+}
+
+.lp-hbar {
+  height: 8px;
+  background: #1a1a22;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+
+.lp-h-dot {
+  width: 10px;
+  height: 3px;
+  background: #3f3f52;
+  border-radius: 1px;
+}
+
+/* minimal preview */
+.tpl-minimal {
+  background: #f4f5f7;
+
+  .tpl-minimal-card {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 48px; height: 34px;
+    background: #fff;
+    border-radius: 4px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+}
+
+/* split preview */
+.tpl-split {
+  background: var(--el-bg-color);
+  display: flex;
+
+  .tpl-split-left {
+    width: 36px;
+    background: var(--xi-gradient);
+    flex-shrink: 0;
+  }
+  .tpl-split-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--el-bg-color);
+  }
+  .tpl-split-card {
+    width: 32px; height: 26px;
+    background: var(--el-bg-color);
+    border: 1px solid var(--el-border-color-lighter);
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+}
+
 </style>
 
-<style>
-.el-popper.is-dark {
-}
-</style>

@@ -1,12 +1,14 @@
 <template>
-  <div class="layout">
+  <div class="layout" :class="'lm-' + layoutMode">
     <aside
+      v-if="layoutMode !== 'top'"
       class="aside"
       :class="uiStore.asideShow ? 'aside-show' : 'aside-hide'"
     >
       <Aside />
     </aside>
     <div
+      v-if="layoutMode !== 'top'"
       :class="(uiStore.asideShow && isMobile) ? 'overlay-show' : 'overlay-hide'"
       @click="uiStore.asideShow = false"
     />
@@ -14,6 +16,7 @@
       <header class="top-bar">
         <Header />
       </header>
+      <HNav v-if="layoutMode === 'top'" />
       <Main />
     </div>
   </div>
@@ -22,19 +25,26 @@
 
 <script setup>
 import Aside from '@/layout/aside/index.vue'
+import HNav from '@/layout/hnav/index.vue'
 import Header from '@/layout/header/index.vue'
 import Main from '@/layout/main/index.vue'
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useUiStore } from "@/store/ui.js";
+import { useSettingStore } from "@/store/setting.js";
 import writer from '@/layout/write/index.vue'
 
 const uiStore = useUiStore();
+const settingStore = useSettingStore();
 const writerRef = ref({})
 const isMobile = ref(window.innerWidth < 1025)
 
+const layoutMode = computed(() => settingStore.settings?.layoutMode || 'default')
+
 const handleResize = () => {
   isMobile.value = window.innerWidth < 1025
-  uiStore.asideShow = window.innerWidth > 1024;
+  if (layoutMode.value !== 'top') {
+    uiStore.asideShow = window.innerWidth > 1024;
+  }
 }
 
 onMounted(() => {

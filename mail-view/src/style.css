@@ -163,6 +163,14 @@
   --vt-y: 50%;
   --vt-duration: 520ms;
   --vt-easing: ease-out;
+
+  /* Login gradient template orb colors (theme-aware) */
+  --xi-orb-1: rgba(99,102,241,0.62);
+  --xi-orb-2: rgba(139,92,246,0.54);
+  --xi-orb-3: rgba(59,130,246,0.46);
+  --xi-orb-bg-top:    rgba(99,102,241,0.34);
+  --xi-orb-bg-bottom: rgba(139,92,246,0.28);
+  --xi-orb-card-border: rgba(99,102,241,0.24);
 }
 
 .dark {
@@ -189,6 +197,16 @@
   --message-block-color: rgba(30, 30, 30, 0.2);
   --el-border-color: #27272a !important;
 }
+
+/* ── Color theme overrides ──
+   Each theme lives in src/themes/<name>.css
+   To add a new theme: create the file and add an @import here.
+   ── */
+@import './themes/rose.css';
+@import './themes/emerald.css';
+@import './themes/amber.css';
+@import './themes/sky.css';
+@import './themes/purple.css';
 
 .el-input {
   --el-input-text-color: var(--el-text-color-primary) !important;
