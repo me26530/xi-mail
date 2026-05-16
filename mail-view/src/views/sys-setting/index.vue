@@ -1815,40 +1815,53 @@ function editSetting(settingForm, refreshStatus = true) {
   display: flex;
   height: 100%;
   overflow: hidden;
+
+  @media (max-width: 680px) {
+    flex-direction: column;
+  }
 }
 
 /* Left navigation */
 .settings-nav {
-  width: 180px;
+  width: 168px;
   flex-shrink: 0;
   border-right: 1px solid var(--el-border-color-lighter);
   background: var(--el-bg-color);
-  padding: 16px 8px;
+  padding: 12px 8px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
   overflow-y: auto;
 
-  @media (max-width: 700px) {
-    width: 52px;
+  @media (max-width: 680px) {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    border-right: none;
+    border-bottom: 1px solid var(--el-border-color-lighter);
+    padding: 6px 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    gap: 4px;
+    flex-shrink: 0;
 
-    .sn-label { display: none; }
-    .sn-item  { justify-content: center; padding: 0; }
+    &::-webkit-scrollbar { display: none; }
   }
 }
 
 .sn-item {
   display: flex;
   align-items: center;
-  gap: 9px;
-  height: 34px;
+  gap: 8px;
+  height: 32px;
   padding: 0 10px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 13px;
   font-weight: 450;
   color: var(--el-text-color-regular);
-  transition: all 0.13s ease;
+  transition: background 0.12s ease, color 0.12s ease;
 
   &:hover {
     background: var(--el-fill-color);
@@ -1859,6 +1872,16 @@ function editSetting(settingForm, refreshStatus = true) {
     background: var(--el-color-primary-light-9);
     color: var(--el-color-primary);
     font-weight: 550;
+  }
+
+  @media (max-width: 680px) {
+    flex-shrink: 0;
+    height: 28px;
+    padding: 0 12px;
+    border-radius: 14px;
+    font-size: 12.5px;
+    white-space: nowrap;
+    gap: 6px;
   }
 }
 
@@ -1871,12 +1894,13 @@ function editSetting(settingForm, refreshStatus = true) {
 
 .sb-inner {
   padding: 24px;
-  max-width: 640px;
+  max-width: 660px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 
-  @media (max-width: 700px) { padding: 16px; }
+  @media (max-width: 680px) { padding: 14px 12px; gap: 12px; }
+  @media (max-width: 400px) { padding: 10px 8px; }
 }
 
 .background {
@@ -1904,49 +1928,74 @@ function editSetting(settingForm, refreshStatus = true) {
   background-color: var(--el-bg-color);
   border-radius: var(--xi-radius);
   border: 1px solid var(--el-border-color-lighter);
-  transition: all 0.2s ease;
+  transition: box-shadow 0.18s ease;
   overflow: hidden;
-  box-shadow: var(--xi-shadow-sm);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 
   &:hover {
-    box-shadow: var(--xi-shadow);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
   }
 }
 
-
 .card-title {
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 600;
-  padding: 12px 20px;
+  padding: 11px 18px;
   border-bottom: 1px solid var(--el-border-color-lighter);
   letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--el-text-color-primary);
+  background: var(--el-fill-color-extra-light);
+  box-shadow: inset 3px 0 0 var(--el-color-primary);
 }
 
 .card-content {
-  padding: 16px 20px;
+  padding: 14px 18px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 13px;
+
+  @media (max-width: 480px) { padding: 12px 14px; }
 }
 
 .setting-item {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 16px;
+  grid-template-columns: 1fr auto;
+  gap: 12px 16px;
   font-weight: normal;
   font-size: 13.5px;
+  align-items: center;
 
   > div:first-child {
     display: flex;
     align-items: center;
     gap: 5px;
+    min-width: 0;
   }
 
   > div:last-child {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    justify-items: flex-end;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
     font-weight: normal;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 500px) {
+    grid-template-columns: 1fr;
+    gap: 6px;
+
+    > div:last-child {
+      justify-content: flex-start;
+
+      :deep(.el-input),
+      :deep(.el-select) {
+        width: 100% !important;
+      }
+    }
   }
 }
 
@@ -2559,6 +2608,12 @@ form .el-button {
   display: flex;
   gap: 8px;
   align-items: center;
+
+  @media (max-width: 480px) {
+    flex-wrap: wrap;
+    > .el-input { flex: 1; min-width: 140px; }
+    > .el-button { flex-shrink: 0; }
+  }
 }
 
 .domain-list {
@@ -2614,11 +2669,18 @@ form .el-button {
 
 /* ── Appearance Card ── */
 .appearance-block {
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
   border-bottom: none;
   padding-bottom: 4px;
+
+  > div:last-child {
+    justify-content: flex-start;
+    width: 100%;
+    flex-shrink: 1;
+  }
 }
 
 .theme-swatches {
@@ -2651,6 +2713,14 @@ form .el-button {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+
+  @media (max-width: 480px) {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+  }
 }
 
 .tpl-card {
@@ -2663,6 +2733,7 @@ form .el-button {
   cursor: pointer;
   padding: 0;
   outline: none;
+  flex-shrink: 0;
 
   .tpl-preview {
     width: 88px;
@@ -2737,6 +2808,13 @@ form .el-button {
 .layout-options {
   display: flex;
   gap: 12px;
+
+  @media (max-width: 480px) {
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+  }
 }
 
 .layout-opt {
@@ -2749,6 +2827,7 @@ form .el-button {
   cursor: pointer;
   padding: 0;
   outline: none;
+  flex-shrink: 0;
 
   .layout-preview {
     width: 88px;
