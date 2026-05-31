@@ -33,7 +33,8 @@
           <Icon class="chevron" icon="mingcute:down-small-fill" width="16" height="16" />
         </button>
         <template #dropdown>
-          <div class="user-panel">
+          <el-dropdown-menu class="user-dropdown-menu">
+            <div class="user-panel">
             <div class="panel-avatar">
               {{ formatName(userStore.user.email) }}
             </div>
@@ -71,7 +72,8 @@
                 {{ $t('logOut') }}
               </el-button>
             </div>
-          </div>
+            </div>
+          </el-dropdown-menu>
         </template>
       </el-dropdown>
     </div>
@@ -216,24 +218,13 @@ function formatName(email) {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
   padding: 0 !important;
 }
-.detail-dropdown .el-dropdown-menu__item {
+.user-dropdown-menu {
   background: var(--el-bg-color) !important;
-  color: var(--el-text-color-primary) !important;
+  padding: 0 !important;
+  border: none !important;
 }
-.detail-dropdown .user-panel {
+.user-dropdown-menu .user-panel {
   background: var(--el-bg-color) !important;
-  color: var(--el-text-color-primary) !important;
-}
-.detail-dropdown .user-panel .panel-name {
-  color: var(--el-text-color-primary) !important;
-}
-.detail-dropdown .user-panel .panel-email {
-  color: var(--el-text-color-secondary) !important;
-}
-.detail-dropdown .user-panel .stat-label {
-  color: var(--el-text-color-secondary) !important;
-}
-.detail-dropdown .user-panel .stat-value {
   color: var(--el-text-color-primary) !important;
 }
 </style>
@@ -250,6 +241,15 @@ function formatName(email) {
   border-radius: var(--xi-radius);
   box-shadow: var(--xi-shadow-lg);
   border: 1px solid var(--el-border-color-lighter);
+  background: var(--el-bg-color);
+}
+
+:deep(.el-dropdown__popper) {
+  background: var(--el-bg-color) !important;
+}
+
+:deep(.el-dropdown__popper .el-dropdown-menu) {
+  background: var(--el-bg-color) !important;
 }
 
 .header {
