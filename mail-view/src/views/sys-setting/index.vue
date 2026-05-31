@@ -1955,14 +1955,14 @@ function editSetting(settingForm, refreshStatus = true) {
 
 /* Left navigation */
 .settings-nav {
-  width: 168px;
+  width: 200px;
   flex-shrink: 0;
   border-right: 1px solid var(--el-border-color-lighter);
   background: var(--el-bg-color);
-  padding: 12px 8px;
+  padding: 16px 12px;
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
   overflow-y: auto;
 
   @media (max-width: 680px) {
@@ -1971,7 +1971,7 @@ function editSetting(settingForm, refreshStatus = true) {
     flex-direction: row;
     border-right: none;
     border-bottom: 1px solid var(--el-border-color-lighter);
-    padding: 6px 12px;
+    padding: 8px 12px;
     overflow-x: auto;
     overflow-y: hidden;
     scrollbar-width: none;
@@ -1985,18 +1985,18 @@ function editSetting(settingForm, refreshStatus = true) {
 .sn-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  height: 32px;
-  padding: 0 10px;
-  border-radius: 6px;
+  gap: 10px;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 450;
-  color: var(--el-text-color-regular);
-  transition: background 0.12s ease, color 0.12s ease;
+  color: var(--el-text-color-secondary);
+  transition: all 0.15s ease;
 
   &:hover {
-    background: var(--el-fill-color);
+    background: var(--el-fill-color-light);
     color: var(--el-text-color-primary);
   }
 
@@ -2008,10 +2008,10 @@ function editSetting(settingForm, refreshStatus = true) {
 
   @media (max-width: 680px) {
     flex-shrink: 0;
-    height: 28px;
-    padding: 0 12px;
-    border-radius: 14px;
-    font-size: 12.5px;
+    height: 32px;
+    padding: 0 14px;
+    border-radius: 16px;
+    font-size: 13px;
     white-space: nowrap;
     gap: 6px;
   }
@@ -2025,14 +2025,11 @@ function editSetting(settingForm, refreshStatus = true) {
 }
 
 .sb-inner {
-  padding: 24px;
-  max-width: 660px;
+  padding: 0;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-
-  @media (max-width: 680px) { padding: 14px 12px; gap: 12px; }
-  @media (max-width: 400px) { padding: 10px 8px; }
+  gap: 0;
 }
 
 .background {
@@ -2058,53 +2055,66 @@ function editSetting(settingForm, refreshStatus = true) {
 
 .settings-card {
   background-color: var(--el-bg-color);
-  border-radius: var(--xi-radius);
-  border: 1px solid var(--el-border-color-lighter);
-  transition: box-shadow 0.18s ease;
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid var(--el-border-color-lighter);
+  transition: none;
+  overflow: visible;
+  box-shadow: none;
 
   &:hover {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    box-shadow: none;
+  }
+  
+  &:last-child {
+    border-bottom: none;
   }
 }
 
 .card-title {
-  font-size: 13.5px;
+  font-size: 12px;
   font-weight: 600;
-  padding: 11px 18px;
-  border-bottom: 1px solid var(--el-border-color-lighter);
-  letter-spacing: -0.01em;
+  padding: 20px 24px 8px;
+  border-bottom: none;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--el-text-color-primary);
-  background: var(--el-fill-color-extra-light);
-  box-shadow: inset 3px 0 0 var(--el-color-primary);
+  color: var(--el-text-color-secondary);
+  background: transparent;
+  box-shadow: none;
 }
 
 .card-content {
-  padding: 14px 18px;
+  padding: 0 24px 20px;
   display: flex;
   flex-direction: column;
-  gap: 13px;
+  gap: 0;
 
-  @media (max-width: 480px) { padding: 12px 14px; }
+  @media (max-width: 480px) { padding: 0 16px 16px; }
 }
 
 .setting-item {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 12px 16px;
-  font-weight: normal;
-  font-size: 13.5px;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  gap: 16px;
+  font-weight: normal;
+  font-size: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--el-border-color-extra-light);
+
+  &:last-child {
+    border-bottom: none;
+  }
 
   > div:first-child {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     min-width: 0;
+    color: var(--el-text-color-primary);
   }
 
   > div:last-child {
@@ -2117,11 +2127,13 @@ function editSetting(settingForm, refreshStatus = true) {
   }
 
   @media (max-width: 500px) {
-    grid-template-columns: 1fr;
-    gap: 6px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
 
     > div:last-child {
       justify-content: flex-start;
+      width: 100%;
 
       :deep(.el-input),
       :deep(.el-select) {
@@ -2149,20 +2161,22 @@ function editSetting(settingForm, refreshStatus = true) {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
 }
 
 .global-token-desc {
-  font-size: 12.5px;
+  font-size: 13px;
   color: var(--el-text-color-secondary);
-  margin: 0;
-  line-height: 1.5;
+  margin: 0 0 16px;
+  line-height: 1.6;
 }
 
 .gt-field-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
+  margin-bottom: 16px;
 }
 
 .gt-token-box {
@@ -2170,30 +2184,30 @@ function editSetting(settingForm, refreshStatus = true) {
   min-width: 0;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
+  gap: 10px;
+  padding: 10px 14px;
   background: var(--el-fill-color-light);
   border: 1px solid var(--el-border-color);
-  border-radius: 8px;
+  border-radius: 6px;
 
   .gt-key-icon {
     flex-shrink: 0;
     color: var(--el-color-primary);
-    opacity: 0.7;
+    opacity: 0.8;
   }
 
   .gt-token-text {
     flex: 1;
-    font-family: 'Courier New', monospace;
+    font-family: 'SF Mono', 'Consolas', monospace;
     font-size: 13px;
     color: var(--el-text-color-primary);
     word-break: break-all;
-    line-height: 1.4;
+    line-height: 1.5;
 
     &.masked {
-      letter-spacing: 4px;
+      letter-spacing: 3px;
       color: var(--el-text-color-placeholder);
-      font-size: 11px;
+      font-size: 12px;
     }
   }
 }
@@ -2201,17 +2215,17 @@ function editSetting(settingForm, refreshStatus = true) {
 .gt-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   flex-shrink: 0;
 }
 
 .gt-api-box {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 12px 14px;
-  background: var(--el-fill-color);
-  border-radius: 8px;
+  gap: 10px;
+  padding: 14px 16px;
+  background: var(--el-fill-color-extra-light);
+  border-radius: 6px;
   border: 1px solid var(--el-border-color-lighter);
 
   .gt-api-title {
@@ -2292,15 +2306,26 @@ function editSetting(settingForm, refreshStatus = true) {
 
 .title-icon.warning {
   position: relative;
-  top: 2px;
-  cursor: pointer;
-  margin-left: 2px;
+  top: 1px;
+  cursor: help;
+  margin-left: 4px;
+  color: var(--el-text-color-placeholder);
+  transition: color 0.15s ease;
+  
+  &:hover {
+    color: var(--el-color-warning);
+  }
 }
 
 .warning {
-  margin-left: 2px;
-  color: grey;
-  cursor: pointer;
+  color: var(--el-text-color-placeholder);
+  cursor: help;
+  margin-left: 4px;
+  transition: color 0.15s ease;
+  
+  &:hover {
+    color: var(--el-color-warning);
+  }
 }
 
 .cropper {
@@ -2686,15 +2711,20 @@ function editSetting(settingForm, refreshStatus = true) {
 
 .email-title {
   font-weight: normal !important;
-  display: grid;
-  gap: 10px;
-  grid-template-columns: 1fr auto;
+  display: flex;
+  gap: 12px;
   align-items: center;
 
   span {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    font-size: 14px;
+    color: var(--el-text-color-secondary);
+    background: var(--el-fill-color-light);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: inherit;
   }
 
   .el-button {
@@ -2850,9 +2880,19 @@ form .el-button {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
-  border-bottom: none;
-  padding-bottom: 4px;
+  gap: 12px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--el-border-color-extra-light);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  > div:first-child {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--el-text-color-primary);
+  }
 
   > div:last-child {
     justify-content: flex-start;
@@ -2863,13 +2903,13 @@ form .el-button {
 
 .theme-swatches {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .swatch {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   border: 3px solid transparent;
   cursor: pointer;
@@ -2879,7 +2919,7 @@ form .el-button {
   transition: transform 0.15s, box-shadow 0.15s;
   outline: none;
 
-  &:hover { transform: scale(1.12); }
+  &:hover { transform: scale(1.1); }
 
   &.active {
     border-color: var(--el-color-primary);
@@ -2889,7 +2929,7 @@ form .el-button {
 
 .template-previews {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   flex-wrap: wrap;
 
   @media (max-width: 480px) {
@@ -2905,7 +2945,7 @@ form .el-button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   background: none;
   border: none;
   cursor: pointer;
@@ -2914,27 +2954,29 @@ form .el-button {
   flex-shrink: 0;
 
   .tpl-preview {
-    width: 88px;
-    height: 56px;
-    border-radius: 6px;
+    width: 100px;
+    height: 64px;
+    border-radius: 8px;
     overflow: hidden;
     border: 2px solid var(--el-border-color-lighter);
-    transition: border-color 0.15s, box-shadow 0.15s;
+    transition: all 0.2s ease;
     position: relative;
   }
 
   &.active .tpl-preview {
     border-color: var(--el-color-primary);
-    box-shadow: 0 0 0 1px var(--el-color-primary);
+    box-shadow: 0 0 0 2px var(--el-color-primary-light-8);
   }
 
   &:hover .tpl-preview {
-    border-color: var(--el-color-primary-light-3);
+    border-color: var(--el-color-primary-light-5);
+    transform: translateY(-2px);
   }
 }
 
 .tpl-label {
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 500;
   color: var(--el-text-color-secondary);
 }
 
@@ -2985,7 +3027,7 @@ form .el-button {
 /* layout mode selector */
 .layout-options {
   display: flex;
-  gap: 12px;
+  gap: 16px;
 
   @media (max-width: 480px) {
     overflow-x: auto;
@@ -2999,7 +3041,7 @@ form .el-button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   background: none;
   border: none;
   cursor: pointer;
@@ -3008,23 +3050,24 @@ form .el-button {
   flex-shrink: 0;
 
   .layout-preview {
-    width: 88px;
-    height: 56px;
-    border-radius: 6px;
+    width: 100px;
+    height: 64px;
+    border-radius: 8px;
     overflow: hidden;
     border: 2px solid var(--el-border-color-lighter);
-    transition: border-color 0.15s, box-shadow 0.15s;
+    transition: all 0.2s ease;
     display: flex;
     background: var(--el-fill-color-light);
   }
 
   &.active .layout-preview {
     border-color: var(--el-color-primary);
-    box-shadow: 0 0 0 1px var(--el-color-primary);
+    box-shadow: 0 0 0 2px var(--el-color-primary-light-8);
   }
 
   &:hover .layout-preview {
-    border-color: var(--el-color-primary-light-3);
+    border-color: var(--el-color-primary-light-5);
+    transform: translateY(-2px);
   }
 }
 
