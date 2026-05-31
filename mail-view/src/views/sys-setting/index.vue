@@ -1913,14 +1913,12 @@ function editSetting(settingForm, refreshStatus = true) {
 
 <style scoped lang="scss">
 /* ══════════════════════════════════════════════════════════════════════════════
-   System Settings / 系统设置
-   ──────────────────────────────────────────────────────────────────────────────
-   Modern, clean design with subtle accents
+   System Settings - Modern Vercel-inspired Design
    ══════════════════════════════════════════════════════════════════════════════ */
 .settings-container {
   height: 100%;
   overflow: hidden;
-  background: var(--extra-light-fill) !important;
+  background: var(--el-bg-color) !important;
   position: relative;
 
   .loading {
@@ -1933,6 +1931,7 @@ function editSetting(settingForm, refreshStatus = true) {
     position: absolute;
     top: 0;
     left: 0;
+    background: var(--el-bg-color);
   }
 
   .loading-show {
@@ -1947,41 +1946,42 @@ function editSetting(settingForm, refreshStatus = true) {
   }
 }
 
-/* ── Two-column settings layout ── */
+/* ── Main Layout ── */
 .settings-layout {
   display: flex;
   height: 100%;
   overflow: hidden;
 
-  @media (max-width: 680px) {
+  @media (max-width: 768px) {
     flex-direction: column;
   }
 }
 
-/* Left navigation */
+/* ── Left Navigation - Vercel Style ── */
 .settings-nav {
-  width: 200px;
+  width: 220px;
   flex-shrink: 0;
   border-right: 1px solid var(--el-border-color-lighter);
   background: var(--el-bg-color);
-  padding: 20px 12px;
+  padding: 24px 16px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   overflow-y: auto;
 
-  @media (max-width: 680px) {
+  @media (max-width: 768px) {
     width: 100%;
     height: auto;
     flex-direction: row;
     border-right: none;
     border-bottom: 1px solid var(--el-border-color-lighter);
-    padding: 10px 16px;
+    padding: 12px 16px;
     overflow-x: auto;
     overflow-y: hidden;
     scrollbar-width: none;
-    gap: 8px;
+    gap: 4px;
     flex-shrink: 0;
+    background: var(--extra-light-fill);
 
     &::-webkit-scrollbar { display: none; }
   }
@@ -1990,61 +1990,74 @@ function editSetting(settingForm, refreshStatus = true) {
 .sn-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  height: 40px;
-  padding: 0 14px;
-  border-radius: 10px;
+  gap: 12px;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 13.5px;
-  font-weight: 500;
-  color: var(--el-text-color-regular);
-  transition: all 0.18s ease;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--el-text-color-secondary);
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
 
   &:hover {
-    background: var(--el-fill-color);
     color: var(--el-text-color-primary);
+    background: var(--el-fill-color-light);
   }
 
   &.active {
-    background: var(--el-color-primary-light-9);
-    color: var(--el-color-primary);
-    font-weight: 600;
+    color: var(--el-text-color-primary);
+    background: var(--el-fill-color);
+    font-weight: 500;
+    border-color: var(--el-border-color-lighter);
   }
 
-  @media (max-width: 680px) {
+  @media (max-width: 768px) {
     flex-shrink: 0;
-    height: 34px;
-    padding: 0 14px;
-    border-radius: 17px;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 6px;
     font-size: 13px;
     white-space: nowrap;
-    gap: 6px;
+    gap: 8px;
+    background: var(--el-bg-color);
+    border: 1px solid var(--el-border-color-lighter);
+
+    &.active {
+      background: var(--el-color-primary);
+      color: #fff;
+      border-color: var(--el-color-primary);
+    }
   }
 }
 
-/* Right content */
+/* ── Right Content Area ── */
 .settings-body {
   flex: 1;
   min-width: 0;
   height: 100%;
+  background: var(--extra-light-fill);
 }
 
 .sb-inner {
-  padding: 24px;
-  max-width: 720px;
+  padding: 32px 40px;
+  max-width: 800px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 
-  @media (max-width: 680px) { padding: 16px; gap: 16px; }
-  @media (max-width: 400px) { padding: 12px; }
+  @media (max-width: 768px) { padding: 20px; gap: 20px; }
+  @media (max-width: 480px) { padding: 16px; gap: 16px; }
 }
 
 .background {
-  width: 249px;
-  height: 140px;
+  width: 240px;
+  height: 135px;
   border-radius: 8px;
-  border: 1px solid var(--light-border);
+  border: 1px solid var(--el-border-color-lighter);
+  object-fit: cover;
+  
   @media (max-width: 500px) {
     width: 160px;
     height: 90px;
@@ -2053,7 +2066,7 @@ function editSetting(settingForm, refreshStatus = true) {
 
 .background-btn {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   flex-direction: column;
 }
 
@@ -2061,75 +2074,89 @@ function editSetting(settingForm, refreshStatus = true) {
   margin-left: 10px;
 }
 
-/* ── Settings Card ── */
+/* ── Settings Card - Vercel Style ── */
 .settings-card {
-  background-color: var(--el-bg-color);
-  border-radius: 12px;
+  background: var(--el-bg-color);
+  border-radius: 8px;
   border: 1px solid var(--el-border-color-lighter);
-  transition: box-shadow 0.2s ease;
   overflow: hidden;
-
-  &:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  
+  & + .settings-card {
+    margin-top: 24px;
   }
 }
 
 .card-title {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
-  padding: 14px 20px;
+  padding: 20px 24px;
   border-bottom: 1px solid var(--el-border-color-lighter);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   color: var(--el-text-color-primary);
-  background: var(--el-fill-color-extra-light);
+  background: var(--el-bg-color);
+  letter-spacing: -0.01em;
+  
+  @media (max-width: 480px) {
+    padding: 16px;
+    font-size: 15px;
+  }
 }
 
 .card-content {
-  padding: 18px 20px;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-
-  @media (max-width: 480px) { padding: 14px 16px; }
 }
 
 .setting-item {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
   font-weight: normal;
+  border-bottom: 1px solid var(--el-border-color-extra-light);
+  transition: background 0.15s ease;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  &:hover {
+    background: var(--el-fill-color-extra-light);
+  }
+  
+  @media (max-width: 480px) {
+    padding: 14px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
   font-size: 13.5px;
   align-items: center;
 
   > div:first-child {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     min-width: 0;
+    font-size: 14px;
+    color: var(--el-text-color-primary);
   }
 
   > div:last-child {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 8px;
+    gap: 10px;
     font-weight: normal;
     flex-shrink: 0;
-  }
-
-  @media (max-width: 500px) {
-    grid-template-columns: 1fr;
-    gap: 6px;
-
-    > div:last-child {
+    
+    @media (max-width: 480px) {
+      width: 100%;
       justify-content: flex-start;
-
-      :deep(.el-input),
-      :deep(.el-select) {
-        width: 100% !important;
-      }
     }
   }
 }
@@ -2137,12 +2164,12 @@ function editSetting(settingForm, refreshStatus = true) {
 .auto-ban-right {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   justify-content: flex-end;
 }
 
 .ban-unit {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--el-text-color-secondary);
   white-space: nowrap;
 }
@@ -2152,20 +2179,25 @@ function editSetting(settingForm, refreshStatus = true) {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
 }
 
 .global-token-desc {
-  font-size: 12.5px;
+  font-size: 14px;
   color: var(--el-text-color-secondary);
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.6;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--el-border-color-extra-light);
 }
 
 .gt-field-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--el-border-color-extra-light);
 }
 
 .gt-token-box {
@@ -2173,30 +2205,30 @@ function editSetting(settingForm, refreshStatus = true) {
   min-width: 0;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
+  gap: 10px;
+  padding: 10px 14px;
   background: var(--el-fill-color-light);
   border: 1px solid var(--el-border-color);
-  border-radius: 8px;
+  border-radius: 6px;
 
   .gt-key-icon {
     flex-shrink: 0;
     color: var(--el-color-primary);
-    opacity: 0.7;
+    opacity: 0.8;
   }
 
   .gt-token-text {
     flex: 1;
-    font-family: 'Courier New', monospace;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
     font-size: 13px;
     color: var(--el-text-color-primary);
     word-break: break-all;
-    line-height: 1.4;
+    line-height: 1.5;
 
     &.masked {
-      letter-spacing: 4px;
+      letter-spacing: 3px;
       color: var(--el-text-color-placeholder);
-      font-size: 11px;
+      font-size: 12px;
     }
   }
 }
@@ -2204,49 +2236,51 @@ function editSetting(settingForm, refreshStatus = true) {
 .gt-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   flex-shrink: 0;
 }
 
 .gt-api-box {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 12px 14px;
-  background: var(--el-fill-color);
-  border-radius: 8px;
-  border: 1px solid var(--el-border-color-lighter);
+  gap: 10px;
+  padding: 16px 24px;
+  background: var(--el-fill-color-extra-light);
+  border-radius: 0 0 8px 8px;
 
   .gt-api-title {
     font-size: 12px;
     font-weight: 600;
     color: var(--el-text-color-secondary);
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin-bottom: 2px;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
   }
 }
 
 .gt-api-line {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
-  font-size: 12.5px;
+  gap: 10px;
+  font-size: 13px;
 
   code {
     flex: 1;
-    font-family: 'Courier New', monospace;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
     font-size: 12px;
     color: var(--el-text-color-primary);
     word-break: break-all;
-    line-height: 1.5;
+    line-height: 1.6;
+    background: var(--el-fill-color);
+    padding: 4px 8px;
+    border-radius: 4px;
   }
 }
 
 .gt-method {
   flex-shrink: 0;
   display: inline-block;
-  padding: 1px 6px;
+  padding: 2px 8px;
   border-radius: 4px;
   background: var(--el-color-success-light-9);
   color: var(--el-color-success);
@@ -2259,7 +2293,7 @@ function editSetting(settingForm, refreshStatus = true) {
 .gt-header-label {
   flex-shrink: 0;
   display: inline-block;
-  padding: 1px 6px;
+  padding: 2px 8px;
   border-radius: 4px;
   background: var(--el-color-info-light-9);
   color: var(--el-color-info);
@@ -2272,31 +2306,91 @@ function editSetting(settingForm, refreshStatus = true) {
 .gt-disabled-tip {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12.5px;
+  gap: 8px;
+  font-size: 14px;
   color: var(--el-text-color-placeholder);
-  padding: 8px 0;
+  padding: 20px 24px;
 }
 
 .r2domain-item {
   display: flex;
-  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--el-border-color-extra-light);
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
   > div:first-child {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
+    font-size: 14px;
   }
 
   > div:last-child {
     flex: 1;
-    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
   }
 }
 
-.title-icon.warning {
-  position: relative;
-  top: 2px;
-  cursor: pointer;
+.warning {
+  color: var(--el-text-color-placeholder);
+  cursor: help;
+  transition: color 0.15s ease;
+  margin-left: 2px;
+  
+  &:hover {
+    color: var(--el-color-warning);
+  }
+}
+
+.opt-button {
+  min-width: 36px;
+  height: 32px;
+}
+
+.forward {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.domain-count {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--el-text-color-secondary);
+  background: var(--el-fill-color);
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.r2domain {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-end;
+  
+  span {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    color: var(--el-text-color-secondary);
+    background: var(--el-fill-color-light);
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+}
+
+.storage-type {
+  display: flex;
+  align-items: center;
+}
   margin-left: 2px;
 }
 
@@ -2689,15 +2783,21 @@ function editSetting(settingForm, refreshStatus = true) {
 
 .email-title {
   font-weight: normal !important;
-  display: grid;
-  gap: 10px;
-  grid-template-columns: 1fr auto;
+  display: flex;
+  gap: 12px;
   align-items: center;
 
   span {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 14px;
+    color: var(--el-text-color-secondary);
+    background: var(--el-fill-color-light);
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--el-border-color-lighter);
   }
 
   .el-button {
@@ -2853,9 +2953,19 @@ form .el-button {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
-  border-bottom: none;
-  padding-bottom: 4px;
+  gap: 16px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--el-border-color-extra-light);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  > div:first-child {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--el-text-color-primary);
+  }
 
   > div:last-child {
     justify-content: flex-start;
@@ -2866,13 +2976,13 @@ form .el-button {
 
 .theme-swatches {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .swatch {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   border: 3px solid transparent;
   cursor: pointer;
@@ -2882,7 +2992,7 @@ form .el-button {
   transition: transform 0.15s, box-shadow 0.15s;
   outline: none;
 
-  &:hover { transform: scale(1.12); }
+  &:hover { transform: scale(1.1); }
 
   &.active {
     border-color: var(--el-color-primary);
@@ -2892,7 +3002,7 @@ form .el-button {
 
 .template-previews {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   flex-wrap: wrap;
 
   @media (max-width: 480px) {
@@ -2908,7 +3018,7 @@ form .el-button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   background: none;
   border: none;
   cursor: pointer;
@@ -2917,28 +3027,30 @@ form .el-button {
   flex-shrink: 0;
 
   .tpl-preview {
-    width: 88px;
-    height: 56px;
-    border-radius: 6px;
+    width: 100px;
+    height: 64px;
+    border-radius: 8px;
     overflow: hidden;
     border: 2px solid var(--el-border-color-lighter);
-    transition: border-color 0.15s, box-shadow 0.15s;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
     position: relative;
   }
 
   &.active .tpl-preview {
     border-color: var(--el-color-primary);
-    box-shadow: 0 0 0 1px var(--el-color-primary);
+    box-shadow: 0 0 0 2px var(--el-color-primary-light-8);
   }
 
   &:hover .tpl-preview {
-    border-color: var(--el-color-primary-light-3);
+    border-color: var(--el-color-primary-light-5);
+    transform: translateY(-2px);
   }
 }
 
 .tpl-label {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--el-text-color-secondary);
+  font-weight: 500;
 }
 
 /* gradient preview */
