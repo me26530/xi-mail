@@ -1,23 +1,21 @@
 <template>
   <div class="settings-card">
     <div class="card-header">
-      <div class="card-title">
-        <Icon icon="mdi:domain" width="18" height="18" />
-        {{ $t('domainManagement') }}
+      <div>
+        <h3 class="card-title">{{ $t('domainManagement') }}</h3>
+        <p class="card-desc">{{ $t('domainManagementDesc') || 'Manage email domains for your organization' }}</p>
       </div>
     </div>
     <div class="card-body">
       <div class="setting-row">
-        <span class="setting-label">
-          {{ $t('domainList') }}
-          <el-tooltip effect="dark" :content="$t('domainManagementDesc')">
-            <Icon class="tip-icon" icon="fe:warning" width="16" height="16"/>
-          </el-tooltip>
-        </span>
+        <div class="setting-info">
+          <span class="setting-label">{{ $t('domainList') }}</span>
+          <span class="setting-desc">{{ $t('domainListDesc') || 'View and manage registered domains' }}</span>
+        </div>
         <div class="setting-control">
-          <el-tag type="info" size="small">{{ domainsCount }} {{ $t('domain') || 'domains' }}</el-tag>
-          <el-button class="action-btn" size="small" type="primary" @click="$emit('openDomainManagement')">
-            <Icon icon="fluent:settings-48-regular" width="16" height="16"/>
+          <el-tag type="info" size="small">{{ domainsCount }} {{ domainsCount === 1 ? $t('domain') : $t('domains') || 'domains' }}</el-tag>
+          <el-button size="small" type="primary" @click="$emit('openDomainManagement')">
+            {{ $t('manage') || 'Manage' }}
           </el-button>
         </div>
       </div>

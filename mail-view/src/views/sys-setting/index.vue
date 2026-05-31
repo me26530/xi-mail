@@ -6,137 +6,145 @@
     </div>
 
     <template v-if="!firstLoading">
-      <!-- Header -->
-      <header class="settings-header">
-        <h1 class="settings-title">{{ $t('systemSettings') || 'Settings' }}</h1>
-        <p class="settings-subtitle">{{ $t('systemSettingsDesc') || 'Manage your system preferences and configurations' }}</p>
-      </header>
+      <!-- Left Sidebar Navigation -->
+      <aside class="settings-sidebar">
+        <div class="sidebar-header">
+          <h1 class="sidebar-title">{{ $t('systemSettings') || 'Settings' }}</h1>
+        </div>
+        
+        <nav class="sidebar-nav">
+          <button
+            v-for="sec in sections"
+            :key="sec.id"
+            class="nav-item"
+            :class="{ active: activeSection === sec.id }"
+            @click="activeSection = sec.id"
+          >
+            <Icon :icon="sec.icon" width="18" height="18" />
+            <span>{{ $t(sec.label) }}</span>
+          </button>
+        </nav>
+      </aside>
 
-      <!-- Tab Navigation -->
-      <nav class="settings-tabs">
-        <button
-          v-for="sec in sections"
-          :key="sec.id"
-          class="tab-btn"
-          :class="{ active: activeSection === sec.id }"
-          @click="activeSection = sec.id"
-        >
-          <Icon :icon="sec.icon" width="18" height="18" />
-          <span>{{ $t(sec.label) }}</span>
-        </button>
-      </nav>
+      <!-- Main Content Area -->
+      <main class="settings-main">
+        <el-scrollbar class="main-scroll">
+          <div class="main-content">
+            <!-- Page Header -->
+            <header class="page-header">
+              <h2 class="page-title">{{ $t(currentSection?.label) }}</h2>
+              <p class="page-desc" v-if="currentSection?.desc">{{ $t(currentSection.desc) }}</p>
+            </header>
 
-      <!-- Content Area -->
-      <el-scrollbar class="settings-content">
-        <div class="content-inner">
-          <!-- Website Section -->
-          <WebsiteSection 
-            v-show="activeSection === 'website'"
-            :setting="setting"
-            :loading="settingLoading"
-            @change="change"
-            @editTitle="editTitleShow = true"
-          />
+            <!-- Website Section -->
+            <WebsiteSection 
+              v-show="activeSection === 'website'"
+              :setting="setting"
+              :loading="settingLoading"
+              @change="change"
+              @editTitle="editTitleShow = true"
+            />
 
-          <!-- Security Section -->
-          <SecuritySection 
-            v-show="activeSection === 'security'"
-            :setting="setting"
-            :globalTokenEnabled="globalTokenEnabled"
-            :globalToken="globalToken"
-            :globalTokenVisible="globalTokenVisible"
-            :globalTokenGenerating="globalTokenGenerating"
-            @change="change"
-            @openKeywordBlacklist="keywordBlacklistShow = true"
-            @openSenderDomainBlacklist="senderDomainBlacklistShow = true"
-            @globalTokenEnabledChange="onGlobalTokenEnabledChange"
-            @toggleTokenVisible="globalTokenVisible = !globalTokenVisible"
-            @copyToken="copyGlobalToken"
-            @generateToken="onGenerateGlobalToken"
-          />
+            <!-- Security Section -->
+            <SecuritySection 
+              v-show="activeSection === 'security'"
+              :setting="setting"
+              :globalTokenEnabled="globalTokenEnabled"
+              :globalToken="globalToken"
+              :globalTokenVisible="globalTokenVisible"
+              :globalTokenGenerating="globalTokenGenerating"
+              @change="change"
+              @openKeywordBlacklist="keywordBlacklistShow = true"
+              @openSenderDomainBlacklist="senderDomainBlacklistShow = true"
+              @globalTokenEnabledChange="onGlobalTokenEnabledChange"
+              @toggleTokenVisible="globalTokenVisible = !globalTokenVisible"
+              @copyToken="copyGlobalToken"
+              @generateToken="onGenerateGlobalToken"
+            />
 
-          <!-- Email/Registration Section -->
-          <EmailSection 
-            v-show="activeSection === 'registration'"
-            :setting="setting"
-            :loading="settingLoading"
-            @change="change"
-            @openEmailPrefix="emailPrefixShow = true"
-            @openDomainMapping="domainMappingShow = true"
-            @openResendList="showResendList = true"
-            @openResendForm="resendTokenFormShow = true"
-          />
+            <!-- Email/Registration Section -->
+            <EmailSection 
+              v-show="activeSection === 'registration'"
+              :setting="setting"
+              :loading="settingLoading"
+              @change="change"
+              @openEmailPrefix="emailPrefixShow = true"
+              @openDomainMapping="domainMappingShow = true"
+              @openResendList="showResendList = true"
+              @openResendForm="resendTokenFormShow = true"
+            />
 
-          <!-- Domain Section -->
-          <DomainSection 
-            v-show="activeSection === 'domain'"
-            :domainsCount="managedDomainsData.length"
-            @openDomainManagement="domainManagementShow = true"
-          />
+            <!-- Domain Section -->
+            <DomainSection 
+              v-show="activeSection === 'domain'"
+              :domainsCount="managedDomainsData.length"
+              @openDomainManagement="domainManagementShow = true"
+            />
 
-          <!-- Integration Section -->
-          <IntegrationSection 
-            v-show="activeSection === 'integration'"
-            :setting="setting"
-            @change="change"
-            @openR2Domain="r2DomainShow = true"
-            @openS3Config="addS3Show = true"
-            @openTgSetting="openTgSetting"
-            @openThirdEmail="openThirdEmailSetting"
-            @openForwardRules="openForwardRules"
-            @openRegVerifyCount="regVerifyCountShow = true"
-            @openAddVerifyCount="addVerifyCountShow = true"
-            @openTurnstile="turnstileShow = true"
-            @openNoticeSetting="noticePopupShow = true"
-            @openNoticePopup="openNoticePopup"
-          />
+            <!-- Integration Section -->
+            <IntegrationSection 
+              v-show="activeSection === 'integration'"
+              :setting="setting"
+              @change="change"
+              @openR2Domain="r2DomainShow = true"
+              @openS3Config="addS3Show = true"
+              @openTgSetting="openTgSetting"
+              @openThirdEmail="openThirdEmailSetting"
+              @openForwardRules="openForwardRules"
+              @openRegVerifyCount="regVerifyCountShow = true"
+              @openAddVerifyCount="addVerifyCountShow = true"
+              @openTurnstile="turnstileShow = true"
+              @openNoticeSetting="noticePopupShow = true"
+              @openNoticePopup="openNoticePopup"
+            />
 
-          <!-- Sub-workers Section -->
-          <SubWorkersSection 
-            v-show="activeSection === 'sub-workers'"
-            :subWorkers="subWorkers"
-            @addSubWorker="subWorkerDialogShow = true"
-            @toggleStatus="toggleSubWorkerStatus"
-            @deleteSubWorker="deleteSubWorker"
-          />
+            <!-- Sub-workers Section -->
+            <SubWorkersSection 
+              v-show="activeSection === 'sub-workers'"
+              :subWorkers="subWorkers"
+              @addSubWorker="subWorkerDialogShow = true"
+              @toggleStatus="toggleSubWorkerStatus"
+              @deleteSubWorker="deleteSubWorker"
+            />
 
-          <!-- Servers Section (Standalone Only) -->
-          <div v-show="activeSection === 'servers'" class="settings-card">
-            <div class="card-header">
-              <div class="card-title">
-                <Icon icon="mdi:server-outline" width="18" height="18" />
-                {{ $t('serverManage') }}
+            <!-- Servers Section (Standalone Only) -->
+            <div v-show="activeSection === 'servers'" class="settings-card">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <Icon icon="mdi:server-outline" width="18" height="18" />
+                  {{ $t('serverManage') }}
+                </h3>
+              </div>
+              <div class="card-body" style="padding: 20px 24px;">
+                <ServerManager />
               </div>
             </div>
-            <div class="card-body" style="padding: 16px 20px;">
-              <ServerManager />
-            </div>
+
+            <!-- Appearance Section -->
+            <AppearanceSection 
+              v-show="activeSection === 'appearance'"
+              :setting="setting"
+              :colorThemes="colorThemes"
+              :layoutModes="layoutModes"
+              :loginTemplates="loginTemplates"
+              @applyColorTheme="applyColorTheme"
+              @applyLayoutMode="applyLayoutMode"
+              @applyLoginTemplate="applyLoginTemplate"
+            />
+
+            <!-- About Section -->
+            <AboutSection 
+              v-show="activeSection === 'about'"
+              :currentVersion="currentVersion"
+              :hasUpdate="hasUpdate"
+              @openRelease="jump('https://github.com/PastKing/xi-mail/releases')"
+              @openGithub="jump('https://github.com/PastKing/xi-mail')"
+              @openTelegram="jump('https://t.me/pk_oa')"
+              @copy="copyAddr"
+            />
           </div>
-
-          <!-- Appearance Section -->
-          <AppearanceSection 
-            v-show="activeSection === 'appearance'"
-            :setting="setting"
-            :colorThemes="colorThemes"
-            :layoutModes="layoutModes"
-            :loginTemplates="loginTemplates"
-            @applyColorTheme="applyColorTheme"
-            @applyLayoutMode="applyLayoutMode"
-            @applyLoginTemplate="applyLoginTemplate"
-          />
-
-          <!-- About Section -->
-          <AboutSection 
-            v-show="activeSection === 'about'"
-            :currentVersion="currentVersion"
-            :hasUpdate="hasUpdate"
-            @openRelease="jump('https://github.com/PastKing/xi-mail/releases')"
-            @openGithub="jump('https://github.com/PastKing/xi-mail')"
-            @openTelegram="jump('https://t.me/pk_oa')"
-            @copy="copyAddr"
-          />
-        </div>
-      </el-scrollbar>
+        </el-scrollbar>
+      </main>
     </template>
 
     <!-- All Dialogs -->
@@ -470,20 +478,22 @@ const activeSection = ref('website')
 const serverStoreRef = useServerStoreRef()
 const sections = computed(() => {
   const list = [
-    { id: 'website',     icon: 'mingcute:home-4-line',      label: 'websiteSetting' },
-    { id: 'security',    icon: 'mingcute:shield-line',       label: 'securitySetting' },
-    { id: 'registration',icon: 'mingcute:user-add-line',     label: 'emailAddressSetting' },
-    { id: 'domain',      icon: 'mingcute:world-2-line',      label: 'domainManagement' },
-    { id: 'integration', icon: 'mingcute:plug-2-line',       label: 'integration' },
-    { id: 'sub-workers', icon: 'mingcute:server-line',       label: 'subWorkerManage' },
-    { id: 'appearance',  icon: 'mingcute:palette-line',      label: 'appearance' },
+    { id: 'website',     icon: 'mingcute:home-4-line',      label: 'websiteSetting',     desc: 'websiteSettingDesc' },
+    { id: 'security',    icon: 'mingcute:shield-line',       label: 'securitySetting',   desc: 'securitySettingDesc' },
+    { id: 'registration',icon: 'mingcute:user-add-line',     label: 'emailAddressSetting', desc: 'emailAddressSettingDesc' },
+    { id: 'domain',      icon: 'mingcute:world-2-line',      label: 'domainManagement',  desc: 'domainManagementDesc' },
+    { id: 'integration', icon: 'mingcute:plug-2-line',       label: 'integration',       desc: 'integrationDesc' },
+    { id: 'sub-workers', icon: 'mingcute:server-line',       label: 'subWorkerManage',   desc: 'subWorkerManageDesc' },
+    { id: 'appearance',  icon: 'mingcute:palette-line',      label: 'appearance',        desc: 'appearanceDesc' },
   ]
   if (serverStoreRef.isStandalone) {
-    list.push({ id: 'servers', icon: 'mingcute:cloud-line', label: 'serverManage' })
+    list.push({ id: 'servers', icon: 'mingcute:cloud-line', label: 'serverManage', desc: 'serverManageDesc' })
   }
-  list.push({ id: 'about', icon: 'mingcute:information-line', label: 'about' })
+  list.push({ id: 'about', icon: 'mingcute:information-line', label: 'about', desc: 'aboutDesc' })
   return list
 })
+
+const currentSection = computed(() => sections.value.find(s => s.id === activeSection.value))
 
 const hasUpdate = ref(false)
 let getUpdateErrorCount = 1
@@ -1126,9 +1136,9 @@ function editSetting(settingForm, refreshStatus = true) {
 .settings-page {
   height: 100%;
   display: flex;
-  flex-direction: column;
   background: var(--el-bg-color);
   position: relative;
+  overflow: hidden;
 }
 
 .loading-overlay {
@@ -1152,64 +1162,67 @@ function editSetting(settingForm, refreshStatus = true) {
   transition: var(--loading-hide-transition);
 }
 
-/* Header */
-.settings-header {
-  padding: 24px 32px 0;
+/* ── Left Sidebar ── */
+.settings-sidebar {
+  width: 240px;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--el-border-color-lighter);
+  background: var(--el-bg-color);
   
-  @media (max-width: 640px) {
-    padding: 20px 16px 0;
+  @media (max-width: 768px) {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 100;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    
+    &.open {
+      transform: translateX(0);
+    }
   }
 }
 
-.settings-title {
-  font-size: 24px;
+.sidebar-header {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--el-border-color-lighter);
+}
+
+.sidebar-title {
+  font-size: 18px;
   font-weight: 700;
   color: var(--el-text-color-primary);
-  margin: 0 0 4px;
+  margin: 0;
   letter-spacing: -0.02em;
 }
 
-.settings-subtitle {
-  font-size: 14px;
-  color: var(--el-text-color-secondary);
-  margin: 0;
-}
-
-/* Tab Navigation */
-.settings-tabs {
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 10px;
   display: flex;
-  gap: 4px;
-  padding: 20px 32px 0;
-  border-bottom: 1px solid var(--el-border-color-lighter);
-  overflow-x: auto;
-  flex-shrink: 0;
-  scrollbar-width: none;
-  
-  &::-webkit-scrollbar {
-    display: none;
-  }
-  
-  @media (max-width: 640px) {
-    padding: 16px 16px 0;
-  }
+  flex-direction: column;
+  gap: 2px;
 }
 
-.tab-btn {
+.nav-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
+  gap: 12px;
+  padding: 10px 14px;
   border: none;
   background: none;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 450;
   color: var(--el-text-color-secondary);
   cursor: pointer;
-  border-radius: 8px 8px 0 0;
+  border-radius: 8px;
   transition: all 0.15s ease;
-  white-space: nowrap;
-  position: relative;
+  text-align: left;
+  width: 100%;
   
   &:hover {
     color: var(--el-text-color-primary);
@@ -1217,43 +1230,110 @@ function editSetting(settingForm, refreshStatus = true) {
   }
   
   &.active {
-    color: var(--el-color-primary);
+    color: var(--el-text-color-primary);
     background: var(--el-fill-color);
-    
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -1px;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--el-color-primary);
-      border-radius: 2px 2px 0 0;
-    }
+    font-weight: 500;
+  }
+}
+
+/* ── Main Content ── */
+.settings-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--extra-light-fill);
+}
+
+.main-scroll {
+  flex: 1;
+}
+
+.main-content {
+  padding: 32px 40px;
+  max-width: 860px;
+  
+  @media (max-width: 1024px) {
+    padding: 24px;
   }
   
   @media (max-width: 640px) {
+    padding: 20px 16px;
+  }
+}
+
+/* ── Page Header ── */
+.page-header {
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--el-border-color-lighter);
+}
+
+.page-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--el-text-color-primary);
+  margin: 0 0 6px;
+  letter-spacing: -0.02em;
+}
+
+.page-desc {
+  font-size: 14px;
+  color: var(--el-text-color-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Mobile Navigation ── */
+@media (max-width: 768px) {
+  .settings-page {
+    flex-direction: column;
+  }
+  
+  .settings-sidebar {
+    width: 100%;
+    position: relative;
+    transform: none;
+    border-right: none;
+    border-bottom: 1px solid var(--el-border-color-lighter);
+  }
+  
+  .sidebar-header {
+    display: none;
+  }
+  
+  .sidebar-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
     padding: 8px 12px;
+    gap: 4px;
+    scrollbar-width: none;
+    
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  
+  .nav-item {
+    flex-shrink: 0;
+    padding: 8px 14px;
     font-size: 13px;
+    gap: 8px;
+    white-space: nowrap;
     
     span {
       display: none;
     }
   }
-}
-
-/* Content Area */
-.settings-content {
-  flex: 1;
-  min-height: 0;
-}
-
-.content-inner {
-  padding: 24px 32px;
-  max-width: 800px;
   
-  @media (max-width: 640px) {
-    padding: 16px;
+  .page-header {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+  }
+  
+  .page-title {
+    font-size: 18px;
   }
 }
 

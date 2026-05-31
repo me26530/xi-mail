@@ -1,14 +1,17 @@
 <template>
   <div class="settings-card">
     <div class="card-header">
-      <div class="card-title">
-        <Icon icon="mdi:web" width="18" height="18" />
-        {{ $t('websiteSetting') }}
+      <div>
+        <h3 class="card-title">{{ $t('websiteSetting') }}</h3>
+        <p class="card-desc">{{ $t('websiteSettingDesc') || 'Configure your website registration and access settings' }}</p>
       </div>
     </div>
     <div class="card-body">
       <div class="setting-row">
-        <span class="setting-label">{{ $t('websiteReg') }}</span>
+        <div class="setting-info">
+          <span class="setting-label">{{ $t('websiteReg') }}</span>
+          <span class="setting-desc">{{ $t('websiteRegDesc') || 'Allow new users to register on this website' }}</span>
+        </div>
         <div class="setting-control">
           <el-switch 
             @change="$emit('change')" 
@@ -21,7 +24,10 @@
       </div>
       
       <div class="setting-row">
-        <span class="setting-label">{{ $t('loginDomain') }}</span>
+        <div class="setting-info">
+          <span class="setting-label">{{ $t('loginDomain') }}</span>
+          <span class="setting-desc">{{ $t('loginDomainDesc') || 'Enable domain-based login' }}</span>
+        </div>
         <div class="setting-control">
           <el-switch 
             @change="$emit('change')" 
@@ -34,11 +40,14 @@
       </div>
       
       <div class="setting-row">
-        <span class="setting-label">{{ $t('regKey') }}</span>
+        <div class="setting-info">
+          <span class="setting-label">{{ $t('regKey') }}</span>
+          <span class="setting-desc">{{ $t('regKeyDesc') || 'Require registration key for new accounts' }}</span>
+        </div>
         <div class="setting-control">
           <el-select
             @change="$emit('change')"
-            style="width: 100px;"
+            style="width: 120px;"
             v-model="setting.regKey"
             placeholder="Select"
           >
@@ -53,17 +62,19 @@
       </div>
       
       <div class="setting-row" v-if="setting.regKey === 0 || setting.regKey === 2">
-        <span class="setting-label">
-          {{ $t('regKeyHint') }}
-          <el-tooltip effect="dark" :content="$t('regKeyHintDesc')">
-            <Icon class="tip-icon" icon="fe:warning" width="16" height="16"/>
-          </el-tooltip>
-        </span>
+        <div class="setting-info">
+          <span class="setting-label">
+            {{ $t('regKeyHint') }}
+            <el-tooltip effect="dark" :content="$t('regKeyHintDesc')">
+              <Icon class="tip-icon" icon="mingcute:information-line" width="15" height="15"/>
+            </el-tooltip>
+          </span>
+        </div>
         <div class="setting-control">
           <el-input
             v-model="setting.regKeyHint"
             :placeholder="$t('regKeyHintPlaceholder')"
-            style="width: 180px;"
+            style="width: 200px;"
             clearable
             @change="$emit('change')"
           />
@@ -71,17 +82,19 @@
       </div>
       
       <div class="setting-row" v-if="setting.regKey === 0 || setting.regKey === 2">
-        <span class="setting-label">
-          {{ $t('regKeyLink') }}
-          <el-tooltip effect="dark" :content="$t('regKeyLinkDesc')">
-            <Icon class="tip-icon" icon="fe:warning" width="16" height="16"/>
-          </el-tooltip>
-        </span>
+        <div class="setting-info">
+          <span class="setting-label">
+            {{ $t('regKeyLink') }}
+            <el-tooltip effect="dark" :content="$t('regKeyLinkDesc')">
+              <Icon class="tip-icon" icon="mingcute:information-line" width="15" height="15"/>
+            </el-tooltip>
+          </span>
+        </div>
         <div class="setting-control">
           <el-input
             v-model="setting.regKeyLink"
             :placeholder="$t('regKeyLinkPlaceholder')"
-            style="width: 180px;"
+            style="width: 200px;"
             clearable
             @change="$emit('change')"
           />
@@ -89,7 +102,10 @@
       </div>
       
       <div class="setting-row">
-        <span class="setting-label">{{ $t('addAccount') }}</span>
+        <div class="setting-info">
+          <span class="setting-label">{{ $t('addAccount') }}</span>
+          <span class="setting-desc">{{ $t('addAccountDesc') || 'Allow users to add additional email accounts' }}</span>
+        </div>
         <div class="setting-control">
           <el-switch 
             @change="$emit('change')" 
@@ -102,12 +118,15 @@
       </div>
       
       <div class="setting-row">
-        <span class="setting-label">
-          {{ $t('multipleEmail') }}
-          <el-tooltip effect="dark" :content="$t('multipleEmailDesc')">
-            <Icon class="tip-icon" icon="fe:warning" width="16" height="16"/>
-          </el-tooltip>
-        </span>
+        <div class="setting-info">
+          <span class="setting-label">
+            {{ $t('multipleEmail') }}
+            <el-tooltip effect="dark" :content="$t('multipleEmailDesc')">
+              <Icon class="tip-icon" icon="mingcute:information-line" width="15" height="15"/>
+            </el-tooltip>
+          </span>
+          <span class="setting-desc">{{ $t('multipleEmailShortDesc') || 'Support multiple email addresses per account' }}</span>
+        </div>
         <div class="setting-control">
           <el-switch 
             @change="$emit('change')" 
@@ -120,11 +139,13 @@
       </div>
       
       <div class="setting-row">
-        <span class="setting-label">{{ $t('websiteTitle') }}</span>
+        <div class="setting-info">
+          <span class="setting-label">{{ $t('websiteTitle') }}</span>
+          <span class="setting-desc">{{ setting.title || 'Not set' }}</span>
+        </div>
         <div class="setting-control">
-          <span class="setting-value">{{ setting.title }}</span>
-          <el-button class="action-btn" size="small" type="primary" @click="$emit('editTitle')">
-            <Icon icon="lsicon:edit-outline" width="14" height="14"/>
+          <el-button size="small" @click="$emit('editTitle')">
+            {{ $t('edit') || 'Edit' }}
           </el-button>
         </div>
       </div>

@@ -3,31 +3,36 @@
     <!-- Email Address Settings -->
     <div class="settings-card">
       <div class="card-header">
-        <div class="card-title">
-          <Icon icon="mdi:at" width="18" height="18" />
-          {{ $t('emailAddressSetting') }}
+        <div>
+          <h3 class="card-title">{{ $t('emailAddressSetting') }}</h3>
+          <p class="card-desc">{{ $t('emailAddressSettingDesc') || 'Configure email address format and mapping rules' }}</p>
         </div>
       </div>
       <div class="card-body">
         <div class="setting-row">
-          <span class="setting-label">{{ $t('emailPrefix') }}</span>
+          <div class="setting-info">
+            <span class="setting-label">{{ $t('emailPrefix') }}</span>
+            <span class="setting-desc">{{ $t('emailPrefixDesc') || 'Set minimum prefix length and character restrictions' }}</span>
+          </div>
           <div class="setting-control">
-            <el-button class="action-btn" size="small" type="primary" @click="$emit('openEmailPrefix')">
-              <Icon icon="fluent:settings-48-regular" width="16" height="16"/>
+            <el-button size="small" @click="$emit('openEmailPrefix')">
+              {{ $t('configure') || 'Configure' }}
             </el-button>
           </div>
         </div>
         
         <div class="setting-row">
-          <span class="setting-label">
-            {{ $t('randomPrefixLength') }}
-            <el-tooltip effect="dark" :content="$t('randomPrefixDesc')">
-              <Icon class="tip-icon" icon="fe:warning" width="16" height="16"/>
-            </el-tooltip>
-          </span>
+          <div class="setting-info">
+            <span class="setting-label">
+              {{ $t('randomPrefixLength') }}
+              <el-tooltip effect="dark" :content="$t('randomPrefixDesc')">
+                <Icon class="tip-icon" icon="mingcute:information-line" width="15" height="15"/>
+              </el-tooltip>
+            </span>
+            <span class="setting-desc">{{ $t('randomPrefixLengthDesc') || 'Length of randomly generated email prefix' }}</span>
+          </div>
           <div class="setting-control">
             <el-input-number 
-              size="small" 
               v-model="setting.randomPrefixLength" 
               @change="$emit('change')" 
               :min="4" 
@@ -39,15 +44,18 @@
         </div>
         
         <div class="setting-row">
-          <span class="setting-label">
-            {{ $t('domainMapping') }}
-            <el-tooltip effect="dark" :content="$t('domainMappingDesc')">
-              <Icon class="tip-icon" icon="fe:warning" width="16" height="16"/>
-            </el-tooltip>
-          </span>
+          <div class="setting-info">
+            <span class="setting-label">
+              {{ $t('domainMapping') }}
+              <el-tooltip effect="dark" :content="$t('domainMappingDesc')">
+                <Icon class="tip-icon" icon="mingcute:information-line" width="15" height="15"/>
+              </el-tooltip>
+            </span>
+            <span class="setting-desc">{{ $t('domainMappingShortDesc') || 'Map internal domains to display domains' }}</span>
+          </div>
           <div class="setting-control">
-            <el-button class="action-btn" size="small" type="primary" @click="$emit('openDomainMapping')">
-              <Icon icon="fluent:settings-48-regular" width="16" height="16"/>
+            <el-button size="small" @click="$emit('openDomainMapping')">
+              {{ $t('configure') || 'Configure' }}
             </el-button>
           </div>
         </div>
@@ -57,14 +65,17 @@
     <!-- Email Sending Settings -->
     <div class="settings-card">
       <div class="card-header">
-        <div class="card-title">
-          <Icon icon="mdi:email-send-outline" width="18" height="18" />
-          {{ $t('emailSetting') }}
+        <div>
+          <h3 class="card-title">{{ $t('emailSetting') }}</h3>
+          <p class="card-desc">{{ $t('emailSettingDesc') || 'Configure email receiving and sending behavior' }}</p>
         </div>
       </div>
       <div class="card-body">
         <div class="setting-row">
-          <span class="setting-label">{{ $t('receiveEmail') }}</span>
+          <div class="setting-info">
+            <span class="setting-label">{{ $t('receiveEmail') }}</span>
+            <span class="setting-desc">{{ $t('receiveEmailDesc') || 'Allow users to receive incoming emails' }}</span>
+          </div>
           <div class="setting-control">
             <el-switch 
               @change="$emit('change')" 
@@ -77,16 +88,19 @@
         </div>
         
         <div class="setting-row">
-          <span class="setting-label">
-            {{ $t('autoRefresh') }}
-            <el-tooltip effect="dark" :content="$t('autoRefreshDesc')">
-              <Icon class="tip-icon" icon="fe:warning" width="16" height="16"/>
-            </el-tooltip>
-          </span>
+          <div class="setting-info">
+            <span class="setting-label">
+              {{ $t('autoRefresh') }}
+              <el-tooltip effect="dark" :content="$t('autoRefreshDesc')">
+                <Icon class="tip-icon" icon="mingcute:information-line" width="15" height="15"/>
+              </el-tooltip>
+            </span>
+            <span class="setting-desc">{{ $t('autoRefreshShortDesc') || 'Auto-refresh inbox at specified interval' }}</span>
+          </div>
           <div class="setting-control">
             <el-select
               @change="$emit('change')"
-              style="width: 80px;"
+              style="width: 100px;"
               v-model="setting.autoRefresh"
               placeholder="Select"
             >
@@ -101,7 +115,10 @@
         </div>
         
         <div class="setting-row">
-          <span class="setting-label">{{ $t('sendEmail') }}</span>
+          <div class="setting-info">
+            <span class="setting-label">{{ $t('sendEmail') }}</span>
+            <span class="setting-desc">{{ $t('sendEmailDesc') || 'Allow users to send outgoing emails' }}</span>
+          </div>
           <div class="setting-control">
             <el-switch 
               @change="$emit('change')" 
@@ -114,12 +131,15 @@
         </div>
         
         <div class="setting-row">
-          <span class="setting-label">
-            {{ $t('noRecipientTitle') }}
-            <el-tooltip effect="dark" :content="$t('noRecipientDesc')">
-              <Icon class="tip-icon" icon="fe:warning" width="16" height="16"/>
-            </el-tooltip>
-          </span>
+          <div class="setting-info">
+            <span class="setting-label">
+              {{ $t('noRecipientTitle') }}
+              <el-tooltip effect="dark" :content="$t('noRecipientDesc')">
+                <Icon class="tip-icon" icon="mingcute:information-line" width="15" height="15"/>
+              </el-tooltip>
+            </span>
+            <span class="setting-desc">{{ $t('noRecipientShortDesc') || 'Accept emails without specific recipient' }}</span>
+          </div>
           <div class="setting-control">
             <el-switch 
               @change="$emit('change')" 
@@ -132,13 +152,16 @@
         </div>
         
         <div class="setting-row">
-          <span class="setting-label">{{ $t('resendToken') }}</span>
+          <div class="setting-info">
+            <span class="setting-label">{{ $t('resendToken') }}</span>
+            <span class="setting-desc">{{ $t('resendTokenDesc') || 'Manage Resend API tokens for sending emails' }}</span>
+          </div>
           <div class="setting-control">
-            <el-button class="action-btn" @click="$emit('openResendList')" size="small" type="primary">
-              <Icon icon="ic:round-list" width="16" height="16"/>
+            <el-button size="small" @click="$emit('openResendList')">
+              {{ $t('viewList') || 'View List' }}
             </el-button>
-            <el-button class="action-btn" @click="$emit('openResendForm')" size="small" type="primary">
-              <Icon icon="material-symbols:add-rounded" width="14" height="14"/>
+            <el-button size="small" type="primary" @click="$emit('openResendForm')">
+              {{ $t('add') || 'Add' }}
             </el-button>
           </div>
         </div>

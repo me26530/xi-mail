@@ -1,15 +1,15 @@
 <template>
   <div class="settings-card">
     <div class="card-header">
-      <div class="card-title">
-        <Icon icon="mdi:palette-outline" width="18" height="18" />
-        {{ $t('appearance') }}
+      <div>
+        <h3 class="card-title">{{ $t('appearance') }}</h3>
+        <p class="card-desc">{{ $t('appearanceDesc') || 'Customize the look and feel of your application' }}</p>
       </div>
     </div>
     <div class="card-body">
       <!-- Color Theme -->
-      <div class="appearance-section">
-        <div class="section-label">{{ $t('colorTheme') }}</div>
+      <div class="appearance-row">
+        <div class="appearance-label">{{ $t('colorTheme') }}</div>
         <div class="swatches">
           <button
             v-for="theme in colorThemes"
@@ -25,8 +25,8 @@
       </div>
 
       <!-- Layout Mode -->
-      <div class="appearance-section">
-        <div class="section-label">{{ $t('layoutMode') }}</div>
+      <div class="appearance-row">
+        <div class="appearance-label">{{ $t('layoutMode') }}</div>
         <div class="layout-grid">
           <button
             v-for="mode in layoutModes"
@@ -73,8 +73,8 @@
       </div>
 
       <!-- Login Template -->
-      <div class="appearance-section">
-        <div class="section-label">{{ $t('loginTemplate') }}</div>
+      <div class="appearance-row">
+        <div class="appearance-label">{{ $t('loginTemplate') }}</div>
         <div class="template-grid">
           <button
             v-for="tpl in loginTemplates"
@@ -121,27 +121,11 @@ defineEmits(['applyColorTheme', 'applyLayoutMode', 'applyLoginTemplate'])
 </script>
 
 <style scoped lang="scss">
-.appearance-section {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--el-border-color-extra-light);
-  
-  &:last-child {
-    border-bottom: none;
-  }
-}
-
-.section-label {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--el-text-color-primary);
-  margin-bottom: 12px;
-}
-
 /* Layout Preview Styles */
 .layout-preview {
-  width: 80px;
-  height: 52px;
-  border-radius: 4px;
+  width: 100px;
+  height: 64px;
+  border-radius: 6px;
   overflow: hidden;
   display: flex;
   background: #1a1a22;

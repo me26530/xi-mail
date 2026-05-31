@@ -1,69 +1,68 @@
 <template>
   <div class="settings-card">
     <div class="card-header">
-      <div class="card-title">
-        <Icon icon="mdi:information-outline" width="18" height="18" />
-        {{ $t('about') }}
+      <div>
+        <h3 class="card-title">{{ $t('about') }}</h3>
+        <p class="card-desc">{{ $t('aboutDesc') || 'Version information, community links, and support' }}</p>
       </div>
     </div>
     <div class="card-body">
-      <div class="setting-row">
-        <span class="setting-label">{{ $t('version') }}</span>
-        <div class="setting-control">
-          <el-badge is-dot :hidden="!hasUpdate">
-            <el-button @click="$emit('openRelease')">
+      <!-- Version & Links -->
+      <div class="about-grid">
+        <div class="about-item" @click="$emit('openRelease')">
+          <div class="about-icon">
+            <Icon icon="mingcute:version-line" width="20" height="20"/>
+          </div>
+          <div class="about-info">
+            <div class="about-label">{{ $t('version') }}</div>
+            <div class="about-value">
               {{ currentVersion }}
-              <template #icon>
-                <Icon icon="qlementine-icons:version-control-16" style="font-size: 18px" color="#1890FF"/>
-              </template>
-            </el-button>
-          </el-badge>
+              <el-badge v-if="hasUpdate" is-dot style="margin-left: 8px;" />
+            </div>
+          </div>
+        </div>
+        
+        <div class="about-item" @click="$emit('openGithub')">
+          <div class="about-icon" style="background: #24292f15; color: #24292f;">
+            <Icon icon="mingcute:github-line" width="20" height="20"/>
+          </div>
+          <div class="about-info">
+            <div class="about-label">GitHub</div>
+            <div class="about-value">xi-mail</div>
+          </div>
+        </div>
+        
+        <div class="about-item" @click="$emit('openTelegram')">
+          <div class="about-icon" style="background: #0088cc15; color: #0088cc;">
+            <Icon icon="mingcute:telegram-line" width="20" height="20"/>
+          </div>
+          <div class="about-info">
+            <div class="about-label">Telegram</div>
+            <div class="about-value">{{ $t('community') }}</div>
+          </div>
         </div>
       </div>
       
-      <div class="setting-row">
-        <span class="setting-label">{{ $t('community') }}</span>
-        <div class="setting-control">
-          <el-button @click="$emit('openGithub')">
-            <template #icon>
-              <Icon icon="codicon:github-inverted" width="18" height="18"/>
-            </template>
-            Github
-          </el-button>
-          <el-button @click="$emit('openTelegram')">
-            <template #icon>
-              <Icon icon="logos:telegram" width="18" height="18"/>
-            </template>
-            Telegram
+      <!-- Donate Section -->
+      <div class="donate-section">
+        <div class="appearance-label" style="margin-bottom: 14px;">{{ $t('donate') }}</div>
+        <div class="donate-row">
+          <span class="donate-chain bep20">BEP20</span>
+          <code class="donate-addr" @click="$emit('copy', '0x555390f5c07cf76cc344f42612196e8669e3586b')">
+            0x555390f5c07cf76cc344f42612196e8669e3586b
+          </code>
+          <el-button size="small" text @click="$emit('copy', '0x555390f5c07cf76cc344f42612196e8669e3586b')">
+            <Icon icon="mingcute:copy-2-line" width="14" height="14"/>
           </el-button>
         </div>
-      </div>
-      
-      <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 12px;">
-        <span class="setting-label">{{ $t('donate') }}</span>
-        <div class="donate-box">
-          <div class="donate-row">
-            <span class="donate-chain bep20">BEP20</span>
-            <code class="donate-addr" @click="$emit('copy', '0x555390f5c07cf76cc344f42612196e8669e3586b')">
-              0x555390f5c07cf76cc344f42612196e8669e3586b
-            </code>
-            <el-tooltip :content="$t('copy')">
-              <el-button circle size="small" plain @click="$emit('copy', '0x555390f5c07cf76cc344f42612196e8669e3586b')">
-                <Icon icon="mdi:content-copy" width="12" height="12"/>
-              </el-button>
-            </el-tooltip>
-          </div>
-          <div class="donate-row">
-            <span class="donate-chain trc20">TRC20</span>
-            <code class="donate-addr" @click="$emit('copy', 'TVqK4thJCsaaWvp1Dah9F5CFZ1iqw75f4G')">
-              TVqK4thJCsaaWvp1Dah9F5CFZ1iqw75f4G
-            </code>
-            <el-tooltip :content="$t('copy')">
-              <el-button circle size="small" plain @click="$emit('copy', 'TVqK4thJCsaaWvp1Dah9F5CFZ1iqw75f4G')">
-                <Icon icon="mdi:content-copy" width="12" height="12"/>
-              </el-button>
-            </el-tooltip>
-          </div>
+        <div class="donate-row">
+          <span class="donate-chain trc20">TRC20</span>
+          <code class="donate-addr" @click="$emit('copy', 'TVqK4thJCsaaWvp1Dah9F5CFZ1iqw75f4G')">
+            TVqK4thJCsaaWvp1Dah9F5CFZ1iqw75f4G
+          </code>
+          <el-button size="small" text @click="$emit('copy', 'TVqK4thJCsaaWvp1Dah9F5CFZ1iqw75f4G')">
+            <Icon icon="mingcute:copy-2-line" width="14" height="14"/>
+          </el-button>
         </div>
       </div>
     </div>
