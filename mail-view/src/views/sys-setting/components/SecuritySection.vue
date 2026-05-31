@@ -78,7 +78,7 @@
           <Icon icon="mdi:key-variant" width="18" height="18" />
           {{ $t('globalToken') }}
         </div>
-        <el-switch v-model="globalTokenEnabled" @change="$emit('globalTokenEnabledChange', $event)" />
+        <el-switch :model-value="globalTokenEnabled" @change="$emit('globalTokenEnabledChange', $event)" />
       </div>
       <div class="card-body">
         <div class="setting-row" style="flex-direction: column; align-items: flex-start;">
