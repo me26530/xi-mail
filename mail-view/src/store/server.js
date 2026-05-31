@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 
-const isStandalone = import.meta.env.VITE_STANDALONE === 'true'
 const builtinBaseURL = import.meta.env.VITE_BASE_URL
+const isStandalone = import.meta.env.VITE_STANDALONE === 'true'
+  || (!builtinBaseURL || builtinBaseURL === '')
 
 function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
