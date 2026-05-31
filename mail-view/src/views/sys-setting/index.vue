@@ -2075,6 +2075,20 @@ function editSetting(settingForm, refreshStatus = true) {
   margin-left: 10px;
 }
 
+/* Fix el-input-tag white border */
+:deep(.el-input-tag) {
+  background: var(--el-fill-color-light);
+  border-color: var(--el-border-color);
+  
+  .el-input-tag__inner {
+    background: transparent;
+  }
+  
+  &:focus-within {
+    border-color: var(--el-color-primary);
+  }
+}
+
 .settings-card {
   background-color: var(--el-bg-color);
   border-radius: 0;
