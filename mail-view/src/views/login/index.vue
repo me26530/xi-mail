@@ -22,6 +22,53 @@
       </div>
     </div>
 
+    <!-- Glassmorphism template: full-screen image background -->
+    <div v-if="loginTemplate === 'glassmorphism'" class="glass-bg">
+      <div class="glass-orb glass-orb-1"></div>
+      <div class="glass-orb glass-orb-2"></div>
+      <div class="glass-orb glass-orb-3"></div>
+    </div>
+
+    <!-- Aurora template: right side brand panel -->
+    <div v-if="loginTemplate === 'aurora'" class="aurora-panel">
+      <div class="aurora-waves">
+        <div class="aurora-wave aurora-wave-1"></div>
+        <div class="aurora-wave aurora-wave-2"></div>
+        <div class="aurora-wave aurora-wave-3"></div>
+      </div>
+      <div class="aurora-stars"></div>
+      <div class="aurora-brand">
+        <div class="aurora-logo">
+          <Icon icon="mingcute:mail-send-fill" width="32" height="32" />
+        </div>
+        <h1 class="aurora-title">{{ settingStore.settings.title }}</h1>
+        <p class="aurora-desc">{{ $t('loginSubTitle') }}</p>
+        <div class="aurora-features">
+          <div class="aurora-feature">
+            <Icon icon="mingcute:shield-check-fill" width="18" height="18" />
+            <span>{{ $t('featureSecure') || 'Secure & Private' }}</span>
+          </div>
+          <div class="aurora-feature">
+            <Icon icon="mingcute:flash-fill" width="18" height="18" />
+            <span>{{ $t('featureFast') || 'Lightning Fast' }}</span>
+          </div>
+          <div class="aurora-feature">
+            <Icon icon="mingcute:planet-fill" width="18" height="18" />
+            <span>{{ $t('featureGlobal') || 'Global Access' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Geometric template: decorative shapes -->
+    <div v-if="loginTemplate === 'geometric'" class="geo-shapes">
+      <div class="geo-shape geo-circle"></div>
+      <div class="geo-shape geo-square"></div>
+      <div class="geo-shape geo-triangle"></div>
+      <div class="geo-shape geo-donut"></div>
+      <div class="geo-grid"></div>
+    </div>
+
     <!-- Centered card -->
     <div class="card-wrapper">
       <div class="auth-card" v-motion :initial="{ opacity: 0, y: 24, scale: 0.98 }" :enter="{ opacity: 1, y: 0, scale: 1, transition: { duration: 400 } }">

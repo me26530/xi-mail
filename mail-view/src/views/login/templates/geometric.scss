@@ -1,117 +1,91 @@
 /* ═══════════════════════════════════════════════════════════════════════════════
-   Login Template: geometric → "几何"
+   Login Template: geometric → "几何" (Geometric)
    ───────────────────────────────────────────────────────────────────────────────
-   Bold geometric design with animated shapes, strong colors,
-   and modern brutalist influences with soft edges.
+   Bold brutalist design with floating geometric shapes,
+   asymmetric card placement, and playful interactions.
    ═══════════════════════════════════════════════════════════════════════════════ */
 .template-geometric {
-  background: #f8f6f4;
+  background: #faf9f7;
+  overflow: hidden;
 
-  .bg-layer {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
+  .bg-layer { display: none; }
+
+  /* Card positioned to the right */
+  .card-wrapper {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: 100vh;
+    padding: 40px 80px;
+
+    @media (max-width: 900px) {
+      justify-content: center;
+      padding: 40px 20px;
+    }
   }
 
-  /* Geometric shapes */
-  .bg-orb {
-    position: absolute;
-    border-radius: 0;
-    filter: none;
-  }
-
-  .bg-orb-1 {
-    width: 400px;
-    height: 400px;
-    top: -100px;
-    right: -100px;
-    background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
-    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-    animation: morph-1 15s ease-in-out infinite;
-    opacity: 0.8;
-  }
-
-  .bg-orb-2 {
-    width: 300px;
-    height: 300px;
-    bottom: -80px;
-    left: -80px;
-    background: linear-gradient(135deg, #5f27cd 0%, #341f97 100%);
-    border-radius: 70% 30% 30% 70% / 60% 40% 60% 40%;
-    animation: morph-2 18s ease-in-out infinite;
-    opacity: 0.7;
-  }
-
-  .bg-orb-3 {
-    width: 200px;
-    height: 200px;
-    top: 50%;
-    left: 10%;
-    background: linear-gradient(135deg, #00d2d3 0%, #54a0ff 100%);
-    border-radius: 60% 40% 50% 50% / 50% 60% 40% 50%;
-    animation: morph-3 12s ease-in-out infinite;
-    opacity: 0.6;
-    transform: translateY(-50%);
-  }
-
-  /* Grid pattern */
-  .bg-grid {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
-    background-size: 60px 60px;
-  }
-
-  /* Card */
   .auth-card {
     background: #ffffff;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-    border: 2px solid #1a1a1a;
-    border-radius: 20px;
-    box-shadow:
-      8px 8px 0 0 #1a1a1a,
-      0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    border: 3px solid #1a1a1a;
+    border-radius: 24px;
+    box-shadow: 12px 12px 0 0 #1a1a1a;
+    max-width: 420px;
+    width: 100%;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 
     &:hover {
-      transform: translate(-2px, -2px);
-      box-shadow:
-        12px 12px 0 0 #1a1a1a,
-        0 25px 50px -12px rgba(0, 0, 0, 0.2);
+      transform: translate(-4px, -4px);
+      box-shadow: 16px 16px 0 0 #1a1a1a;
     }
   }
 
   /* Typography */
-  .app-name        { color: #1a1a1a; font-weight: 800; }
-  .card-heading h2 { color: #1a1a1a; font-weight: 700; }
-  .card-heading p  { color: #666666; }
-  .field label     { color: #333333; font-weight: 600; }
+  .app-name { 
+    color: #1a1a1a; 
+    font-weight: 900;
+    letter-spacing: -0.03em;
+  }
+  .card-heading h2 { 
+    color: #1a1a1a; 
+    font-weight: 800;
+  }
+  .card-heading p { color: #666666; }
+  .field label { 
+    color: #1a1a1a; 
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
 
   .logo-icon {
     background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
-    border: 2px solid #1a1a1a;
-    box-shadow: 3px 3px 0 0 #1a1a1a;
+    border: 3px solid #1a1a1a;
+    box-shadow: 4px 4px 0 0 #1a1a1a;
+    border-radius: 16px;
   }
 
-  /* Inputs */
+  /* Inputs - brutalist style */
   .input-main,
   .input-group {
     background: #ffffff;
     border: 2px solid #1a1a1a;
-    border-radius: 12px;
+    border-radius: 14px;
+    transition: all 0.2s ease;
 
     &:focus-within {
-      box-shadow: 4px 4px 0 0 #1a1a1a;
-      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0 0 #1a1a1a;
+      transform: translate(-3px, -3px);
     }
   }
 
   input {
     color: #1a1a1a;
-    font-weight: 500;
+    font-weight: 600;
     &::placeholder { color: #999999; }
   }
 
@@ -123,27 +97,27 @@
 
   .input-suffix {
     color: #1a1a1a;
-    font-weight: 600;
+    font-weight: 700;
     border-left: 2px solid #1a1a1a;
-    &:hover { background: #f0f0f0; }
+    &:hover { background: #f5f5f5; }
   }
 
   /* Tab bar */
   .tab-bar {
-    background: #f0f0f0;
+    background: #f5f5f5;
     border: 2px solid #1a1a1a;
-    border-radius: 12px;
+    border-radius: 14px;
   }
-  .tab {
+  .tab { 
     color: #666666;
-    font-weight: 600;
+    font-weight: 700;
   }
   .tab.active {
     background: #feca57;
     color: #1a1a1a;
-    border-radius: 8px;
-    box-shadow: 2px 2px 0 0 #1a1a1a;
-    transform: translate(-1px, -1px);
+    border-radius: 10px;
+    box-shadow: 3px 3px 0 0 #1a1a1a;
+    transform: translate(-2px, -2px);
   }
 
   /* Primary button */
@@ -151,47 +125,55 @@
     background: #1a1a1a;
     color: #ffffff;
     border: 2px solid #1a1a1a;
-    border-radius: 12px;
-    font-weight: 700;
-    box-shadow: 4px 4px 0 0 #5f27cd;
-    transition: all 0.2s ease;
+    border-radius: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 6px 6px 0 0 #5f27cd;
+    transition: all 0.15s ease;
 
     &:hover:not(:disabled) {
-      transform: translate(-2px, -2px);
-      box-shadow: 6px 6px 0 0 #5f27cd;
+      transform: translate(-3px, -3px);
+      box-shadow: 9px 9px 0 0 #5f27cd;
     }
 
     &:active:not(:disabled) {
       transform: translate(0, 0);
-      box-shadow: 2px 2px 0 0 #5f27cd;
+      box-shadow: 3px 3px 0 0 #5f27cd;
     }
   }
 
   /* Divider */
   .divider span {
     color: #999999;
-    font-weight: 600;
+    font-weight: 700;
     background: #ffffff;
-    padding: 0 12px;
   }
   .divider::before,
-  .divider::after { background: #1a1a1a; height: 2px; }
+  .divider::after { 
+    background: #1a1a1a; 
+    height: 2px;
+  }
 
   /* Social button */
   .social-btn {
     border: 2px solid #1a1a1a;
     color: #1a1a1a;
     background: #ffffff;
-    font-weight: 600;
-    box-shadow: 3px 3px 0 0 #1a1a1a;
+    font-weight: 700;
+    box-shadow: 4px 4px 0 0 #1a1a1a;
 
     &:hover {
-      transform: translate(-1px, -1px);
-      box-shadow: 4px 4px 0 0 #1a1a1a;
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0 0 #1a1a1a;
     }
   }
 
   /* Footer */
+  .page-footer {
+    position: relative;
+    z-index: 10;
+  }
   .page-footer a {
     color: #666666;
     font-weight: 600;
@@ -199,23 +181,99 @@
   }
 }
 
+/* ── Geometric Shapes Background ── */
+.geo-shapes {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.geo-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.geo-shape {
+  position: absolute;
+}
+
+/* Large circle - top left */
+.geo-circle {
+  width: 400px;
+  height: 400px;
+  top: -100px;
+  left: -100px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+  border-radius: 50%;
+  animation: geo-bounce-1 8s ease-in-out infinite;
+  opacity: 0.9;
+}
+
+/* Rotated square - bottom left */
+.geo-square {
+  width: 250px;
+  height: 250px;
+  bottom: 10%;
+  left: 15%;
+  background: linear-gradient(135deg, #5f27cd 0%, #a55eea 100%);
+  border-radius: 30px;
+  transform: rotate(15deg);
+  animation: geo-rotate 20s linear infinite;
+  opacity: 0.85;
+}
+
+/* Triangle - middle */
+.geo-triangle {
+  width: 0;
+  height: 0;
+  left: 35%;
+  top: 30%;
+  border-left: 100px solid transparent;
+  border-right: 100px solid transparent;
+  border-bottom: 180px solid #00d2d3;
+  animation: geo-float 6s ease-in-out infinite;
+  opacity: 0.8;
+}
+
+/* Donut - bottom right behind card */
+.geo-donut {
+  width: 300px;
+  height: 300px;
+  bottom: -50px;
+  right: 200px;
+  background: transparent;
+  border: 40px solid #10b981;
+  border-radius: 50%;
+  animation: geo-bounce-2 10s ease-in-out infinite;
+  opacity: 0.7;
+
+  @media (max-width: 900px) {
+    display: none;
+  }
+}
+
 /* Dark mode */
 :global(.dark) .template-geometric {
   background: #1a1a1a;
 
-  .bg-grid {
+  .geo-grid {
     background-image:
-      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
   }
 
   .auth-card {
     background: #252525;
     border-color: #ffffff;
-    box-shadow: 8px 8px 0 0 #ffffff;
+    box-shadow: 12px 12px 0 0 #ffffff;
 
     &:hover {
-      box-shadow: 12px 12px 0 0 #ffffff;
+      box-shadow: 16px 16px 0 0 #ffffff;
     }
   }
 
@@ -226,7 +284,7 @@
 
   .logo-icon {
     border-color: #ffffff;
-    box-shadow: 3px 3px 0 0 #ffffff;
+    box-shadow: 4px 4px 0 0 #ffffff;
   }
 
   .input-main,
@@ -235,12 +293,11 @@
     border-color: #ffffff;
 
     &:focus-within {
-      box-shadow: 4px 4px 0 0 #ffffff;
+      box-shadow: 6px 6px 0 0 #ffffff;
     }
   }
 
   input { color: #ffffff; }
-  .input-icon { color: #999999; }
   .input-suffix {
     color: #ffffff;
     border-left-color: #ffffff;
@@ -255,17 +312,17 @@
   .tab.active {
     background: #feca57;
     color: #1a1a1a;
-    box-shadow: 2px 2px 0 0 #ffffff;
+    box-shadow: 3px 3px 0 0 #ffffff;
   }
 
   .primary-btn {
     background: #ffffff;
     color: #1a1a1a;
     border-color: #ffffff;
-    box-shadow: 4px 4px 0 0 #feca57;
+    box-shadow: 6px 6px 0 0 #feca57;
 
     &:hover:not(:disabled) {
-      box-shadow: 6px 6px 0 0 #feca57;
+      box-shadow: 9px 9px 0 0 #feca57;
     }
   }
 
@@ -277,27 +334,31 @@
     border-color: #ffffff;
     color: #ffffff;
     background: #333333;
-    box-shadow: 3px 3px 0 0 #ffffff;
+    box-shadow: 4px 4px 0 0 #ffffff;
   }
 
-  .page-footer a { color: #999999; &:hover { color: #ffffff; } }
+  .page-footer a { 
+    color: #999999; 
+    &:hover { color: #ffffff; } 
+  }
 }
 
-@keyframes morph-1 {
-  0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
-  25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
-  50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
-  75% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
+@keyframes geo-bounce-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, 20px) scale(1.05); }
 }
 
-@keyframes morph-2 {
-  0%, 100% { border-radius: 70% 30% 30% 70% / 60% 40% 60% 40%; }
-  25% { border-radius: 40% 60% 70% 30% / 40% 70% 30% 60%; }
-  50% { border-radius: 60% 40% 40% 60% / 70% 30% 70% 30%; }
-  75% { border-radius: 30% 70% 60% 40% / 50% 60% 40% 50%; }
+@keyframes geo-bounce-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-20px, -30px) scale(0.95); }
 }
 
-@keyframes morph-3 {
-  0%, 100% { border-radius: 60% 40% 50% 50% / 50% 60% 40% 50%; transform: translateY(-50%) rotate(0deg); }
-  50% { border-radius: 40% 60% 60% 40% / 40% 50% 50% 60%; transform: translateY(-50%) rotate(10deg); }
+@keyframes geo-rotate {
+  0% { transform: rotate(15deg); }
+  100% { transform: rotate(375deg); }
+}
+
+@keyframes geo-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-30px); }
 }
