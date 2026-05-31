@@ -1245,9 +1245,12 @@ const colorThemes = computed(() => [
 ])
 
 const loginTemplates = computed(() => [
-  { id: 'gradient', label: t('templateGradient') },
-  { id: 'minimal',  label: t('templateMinimal')  },
-  { id: 'split',    label: t('templateSplit')     },
+  { id: 'gradient',       label: t('templateGradient')       },
+  { id: 'minimal',        label: t('templateMinimal')        },
+  { id: 'split',          label: t('templateSplit')          },
+  { id: 'glassmorphism',  label: t('templateGlassmorphism')  },
+  { id: 'aurora',         label: t('templateAurora')         },
+  { id: 'geometric',      label: t('templateGeometric')      },
 ])
 
 function applyColorTheme(id) {

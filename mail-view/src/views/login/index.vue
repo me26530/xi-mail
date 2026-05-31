@@ -998,4 +998,7 @@ function submitRegister() {
 @import './templates/gradient';
 @import './templates/minimal';
 @import './templates/split';
+@import './templates/glassmorphism';
+@import './templates/aurora';
+@import './templates/geometric';
 </style>
