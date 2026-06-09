@@ -27,10 +27,10 @@ jobs:
 
       - name: Write wrangler.toml from GitHub Secret
         env:
-          WRANGLER_TOML: ${{ secrets.WRANGLER_TOML }}
+          WRANGLER_TOML_MAIN: ${{ secrets.WRANGLER_TOML }}
         run: |
           if [ -z "$WRANGLER_TOML_MAIN" ]; then
-            echo "ERROR: GitHub Secret WRANGLER_TOML_MAIN is empty or not set."
+            echo "ERROR: GitHub Secret WRANGLER_TOML is empty or not set."
             exit 1
           fi
 
