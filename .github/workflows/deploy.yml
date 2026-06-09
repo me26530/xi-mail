@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   deploy:
-    name: Build and Deploy
+    name: Build and Deploy Xi-Mail
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -28,14 +28,36 @@ jobs:
       - name: Write wrangler.toml from GitHub Secret
         run: |
           cat > mail-worker/wrangler.toml <<'EOF'
-          ${{ secrets.WRANGLER_TOML }}
+          ${{ secrets.WRANGLER_TOML_MAIN }}
           EOF
+
+      - name: Fix frontend package dependencies
+        working-directory: mail-view
+        run: |
+          echo "Fixing package.json platform-specific dependencies..."
+
+          npm pkg delete dependencies.@tailwindcss/oxide-win32-x64-msvc || true
+          npm pkg delete devDependencies.@tailwindcss/oxide-win32-x64-msvc || true
+          npm pkg delete optionalDependencies.@tailwindcss/oxide-win32-x64-msvc || true
+
+          npm pkg delete dependencies.@tailwindcss/oxide-win32-ia32-msvc || true
+          npm pkg delete devDependencies.@tailwindcss/oxide-win32-ia32-msvc || true
+          npm pkg delete optionalDependencies.@tailwindcss/oxide-win32-ia32-msvc || true
+
+          npm pkg delete dependencies.@tailwindcss/oxide-win32-arm64-msvc || true
+          npm pkg delete devDependencies.@tailwindcss/oxide-win32-arm64-msvc || true
+          npm pkg delete optionalDependencies.@tailwindcss/oxide-win32-arm64-msvc || true
+
+          echo "Downgrading vite to v6 for @vitejs/plugin-vue v5 compatibility..."
+          npm pkg set devDependencies.vite="^6.3.5"
+
+          echo "Cleaning frontend lockfile and node_modules..."
+          rm -f package-lock.json
+          rm -rf node_modules
 
       - name: Install frontend dependencies
         working-directory: mail-view
-        run: |
-         rm -f package-lock.json
-         npm install --legacy-peer-deps
+        run: npm install --legacy-peer-deps
 
       - name: Build frontend
         working-directory: mail-view
@@ -43,9 +65,14 @@ jobs:
           VITE_WORKER_URL: ${{ vars.VITE_WORKER_URL }}
         run: npm run build
 
+      - name: Fix worker dependencies
+        working-directory: mail-worker
+        run: |
+          rm -rf node_modules
+
       - name: Install worker dependencies
         working-directory: mail-worker
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
