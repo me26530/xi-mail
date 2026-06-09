@@ -1,0 +1,54 @@
+name: Deploy Xi-Mail
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: xi-mail-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Write wrangler.toml from GitHub Secret
+        run: |
+          cat > mail-worker/wrangler.toml <<'EOF'
+          ${{ secrets.WRANGLER_TOML }}
+          EOF
+
+      - name: Install frontend dependencies
+        working-directory: mail-view
+        run: npm install
+
+      - name: Build frontend
+        working-directory: mail-view
+        env:
+          VITE_WORKER_URL: ${{ vars.VITE_WORKER_URL }}
+        run: npm run build
+
+      - name: Install worker dependencies
+        working-directory: mail-worker
+        run: npm install
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: mail-worker
+          command: deploy
