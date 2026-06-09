@@ -33,7 +33,7 @@ jobs:
 
       - name: Install frontend dependencies
         working-directory: mail-view
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: Build frontend
         working-directory: mail-view
