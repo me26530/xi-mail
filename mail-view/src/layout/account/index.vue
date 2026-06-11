@@ -13,7 +13,7 @@
           <Icon icon="iconoir:search" width="14" height="14" />
         </template>
       </el-input>
-      <Icon class="icon refresh" icon="ion:reload" width="16" height="16" @click="refresh"/>
+      <Icon class="icon refresh" icon="mingcute:refresh-2-line" width="16" height="16" @click="refresh"/>
     </div>
 
     <el-scrollbar class="scrollbar" ref="scrollbarRef">

@@ -53,12 +53,12 @@ Xi-Mail 是基于 **Cloudflare Workers / D1 / KV / R2** 构建的全栈自托管
 
 ### 🎨 UI 全面重设计（Linear 风格）
 - 采用 **TailwindCSS 4** + **@vueuse/motion** 动画库重构前端样式系统
-- 登录 / 注册页：3 套模板（极光 / 简约 / 分栏），6 套主题色预设，系统设置可一键切换并持久化
+- 登录 / 注册页：5 套模板（极光 / 简约 / 分栏 / 极光动效 / 毛玻璃），7 套主题色预设，系统设置可一键切换并持久化
 - 登录后布局：完整侧边栏 / 精简侧边栏（仅图标）/ 顶栏导航，三种模式自由切换
 - 侧边栏：深色极简风格，图标统一；精简模式宽度收缩至 56px 并显示 Tooltip
 - 顶栏：紧凑布局，渐变 Compose 按钮，用户信息面板优化
 - 全局设计 Token：indigo-violet 渐变色系、彩色阴影、统一圆角
-- **顶栏语言切换按钮**：一键切换中文 / 英文界面，实时生效并持久化保存
+- **顶栏语言切换按钮**：一键切换中文 / 英文界面，实时生效并持久化保存到用户账号（跨设备同步）
 
 ### 👤 用户系统增强
 - **Display ID**：用户 ID 改为随机字母数字组合（`xxxx-xxxx-xxxx`），不再使用纯数字自增
@@ -90,7 +90,14 @@ Xi-Mail 是基于 **Cloudflare Workers / D1 / KV / R2** 构建的全栈自托管
 - **域名在线管理**：无需修改 `wrangler.toml`，直接在系统设置中新增、删除、启用 / 禁用邮箱域名，配置完成后 `domain` 变量可留空
 - **全局 API Token**：管理员可开启并生成全局 Token，通过 `x-admin-auth` 请求头无需登录直接查询邮件
 - **邮件地址关键词黑名单** + **发件人域名黑名单**：防注册敏感词 / 防邮件轰炸
-- **注册码提示与获取链接**：启用注册码后可配置提示文字及跳转链接
+- **注册码提示与获取链接**：启用注册码后可配置提示文字及跳转链接，支持中英文分别配置
+- **子 Worker 管理**：系统设置中可添加 / 测试 / 启用禁用子 Worker，聚合多 Worker 邮件数据
+
+### 🌐 前后端分离 & 多 Server
+- **独立前端部署**：`npm run build:standalone` 构建纯静态前端，可部署到 CF Pages / Vercel / 任意静态托管
+- **多 Server 架构**：前端支持连接多个 Worker 实例，每个 Server 独立 URL + JWT token，可切换活跃 Server
+- **子 Worker 模板**：`mail-worker-sub/` 轻量子 Worker，仅负责接收邮件 + API 查询，无用户系统、无页面
+- **全新部署零配置**：`domain` 可留空，管理员首次注册时自动跳过域名限制，完成初始化后在系统设置中配置域名
 
 ### 🔎 搜索增强
 - **用户管理子账号搜索**：在 `/all-users` 搜索邮箱时，可同时匹配该用户名下创建的所有子账号邮箱
@@ -121,7 +128,7 @@ Xi-Mail 是基于 **Cloudflare Workers / D1 / KV / R2** 构建的全栈自托管
 
 ```
 xi-mail/
-├── mail-worker/                 # Cloudflare Worker 后端
+├── mail-worker/                 # Cloudflare Worker 后端（主 Worker）
 │   ├── src/
 │   │   ├── api/                 # 接口路由层
 │   │   ├── service/             # 业务逻辑层
@@ -135,12 +142,17 @@ xi-mail/
 │   ├── src/
 │   │   ├── layout/              # 布局组件（侧边栏 / 顶栏 / 顶栏导航）
 │   │   ├── views/               # 页面组件
-│   │   │   └── login/templates/ # 登录模板 CSS（gradient / minimal / split）
-│   │   ├── themes/              # 主题色 CSS（indigo / rose / emerald / amber / sky / purple）
-│   │   ├── store/               # Pinia 状态管理
+│   │   │   └── login/templates/ # 登录模板 CSS（gradient / minimal / split / aurora / glassmorphism）
+│   │   ├── themes/              # 主题色 CSS（indigo / rose / emerald / amber / sky / purple / jade）
+│   │   ├── store/               # Pinia 状态管理（含 serverStore 多 Server 管理）
 │   │   ├── i18n/                # 国际化（zh / en）
 │   │   └── style.css            # 全局样式 / 设计 Token
 │   └── vite.config.js
+│
+├── mail-worker-sub/             # 子 Worker 模板（纯邮件接收 + API）
+│   ├── src/index.js             # 入口：邮件处理 + Hono API
+│   ├── wrangler.example.toml
+│   └── README.md                # 部署说明 & API 文档
 │
 └── doc/images/                  # 截图预览
 ```

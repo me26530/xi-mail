@@ -79,6 +79,23 @@
               </div>
               <div class="setting-item" v-if="setting.regKey === 0 || setting.regKey === 2">
                 <div>
+                  <span>{{ $t('regKeyHintEn') }}</span>
+                  <el-tooltip effect="dark" :content="$t('regKeyHintEnDesc')">
+                    <Icon class="warning" icon="fe:warning" width="18" height="18"/>
+                  </el-tooltip>
+                </div>
+                <div class="forward">
+                  <el-input
+                    v-model="setting.regKeyHintEn"
+                    :placeholder="$t('regKeyHintEnPlaceholder')"
+                    style="width: 200px;"
+                    clearable
+                    @change="change"
+                  />
+                </div>
+              </div>
+              <div class="setting-item" v-if="setting.regKey === 0 || setting.regKey === 2">
+                <div>
                   <span>{{ $t('regKeyLink') }}</span>
                   <el-tooltip effect="dark" :content="$t('regKeyLinkDesc')">
                     <Icon class="warning" icon="fe:warning" width="18" height="18"/>
@@ -1191,7 +1208,7 @@ defineOptions({
   name: 'sys-setting'
 })
 
-const currentVersion = 'v3.1.0'
+const currentVersion = 'v3.2.0'
 
 /* ── Settings navigation ── */
 const activeSection = ref('website')

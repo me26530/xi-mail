@@ -112,13 +112,13 @@
           <div v-if="show === 'login'" key="login" class="fields">
             <div class="field">
               <label>{{ $t('emailAccount') }}</label>
-              <div class="input-group" :class="{ 'has-suffix': settingStore.settings.loginDomain === 0 }">
+              <div class="input-group" :class="{ 'has-suffix': settingStore.settings.loginDomain === 0 && hasDomains }">
                 <div class="input-main">
                   <Icon class="input-icon" icon="mingcute:mail-line" width="16" height="16" />
                   <input v-model="form.email" type="text" autocomplete="off"
-                    :placeholder="settingStore.settings.loginDomain === 0 ? 'username' : $t('emailAccount')" />
+                    :placeholder="(settingStore.settings.loginDomain === 0 && hasDomains) ? 'username' : $t('emailAccount')" />
                 </div>
-                <div v-if="settingStore.settings.loginDomain === 0" class="input-suffix" @click.stop="openSelect">
+                <div v-if="settingStore.settings.loginDomain === 0 && hasDomains" class="input-suffix" @click.stop="openSelect">
                   <span>{{ suffix }}</span>
                   <Icon icon="mingcute:down-line" width="11" height="11" />
                   <el-select v-if="show === 'login'" ref="mySelect" v-model="suffix" class="hidden-select" :popper-class="suffixPopperClass">
@@ -157,12 +157,13 @@
           <div v-else key="register" class="fields">
             <div class="field">
               <label>{{ $t('emailAccount') }}</label>
-              <div class="input-group has-suffix">
+              <div class="input-group" :class="{ 'has-suffix': hasDomains }">
                 <div class="input-main">
                   <Icon class="input-icon" icon="mingcute:mail-line" width="16" height="16" />
-                  <input v-model="registerForm.email" type="text" autocomplete="off" placeholder="username" />
+                  <input v-model="registerForm.email" type="text" autocomplete="off"
+                    :placeholder="hasDomains ? 'username' : $t('emailAccount')" />
                 </div>
-                <div class="input-suffix" @click.stop="openSelect">
+                <div v-if="hasDomains" class="input-suffix" @click.stop="openSelect">
                   <span>{{ suffix }}</span>
                   <Icon icon="mingcute:down-line" width="11" height="11" />
                   <el-select v-if="show !== 'login'" ref="mySelect" v-model="suffix" class="hidden-select" :popper-class="suffixPopperClass">
@@ -202,7 +203,7 @@
                   :placeholder="settingStore.settings.regKey === 0 ? $t('regKey') : $t('regKeyOptional')" />
               </div>
               <div class="reg-key-tips">
-                <span v-if="settingStore.settings.regKeyHint" class="reg-key-hint">{{ settingStore.settings.regKeyHint }}</span>
+                <span v-if="currentRegKeyHint" class="reg-key-hint">{{ currentRegKeyHint }}</span>
                 <a v-if="settingStore.settings.regKeyLink" class="reg-key-link" :href="settingStore.settings.regKeyLink" target="_blank" rel="noopener noreferrer">
                   <Icon icon="mingcute:external-link-line" width="13" height="13" />
                   {{ $t('getRegKey') }}
@@ -249,12 +250,13 @@
       <div class="bind-body">
         <div class="field">
           <label>邮箱地址</label>
-          <div class="input-group has-suffix">
+          <div class="input-group" :class="{ 'has-suffix': hasDomains }">
             <div class="input-main">
               <Icon class="input-icon" icon="mingcute:mail-line" width="16" height="16" />
-              <input v-model="bindForm.email" type="text" autocomplete="off" :placeholder="$t('emailAccount')" />
+              <input v-model="bindForm.email" type="text" autocomplete="off"
+                :placeholder="hasDomains ? 'username' : $t('emailAccount')" />
             </div>
-            <div class="input-suffix" @click.stop="openSelect">
+            <div v-if="hasDomains" class="input-suffix" @click.stop="openSelect">
               <span>{{ suffix }}</span>
               <Icon icon="mingcute:down-line" width="11" height="11" />
               <el-select ref="mySelect" v-model="suffix" class="hidden-select" :popper-class="suffixPopperClass">
@@ -304,6 +306,12 @@ const uiStore = useUiStore();
 const settingStore = useSettingStore();
 const serverStore = useServerStore();
 const loginTemplate = computed(() => settingStore.settings?.loginTemplate || 'gradient');
+const currentRegKeyHint = computed(() => {
+  const s = settingStore.settings;
+  if (!s) return '';
+  if (settingStore.lang === 'en' && s.regKeyHintEn) return s.regKeyHintEn;
+  return s.regKeyHint || '';
+});
 const activeServerSelect = ref(serverStore.activeServerId);
 function onServerChange(id) {
   serverStore.setActiveServer(id);
@@ -327,6 +335,7 @@ const mySelect = ref();
 const suffix = ref('');
 const registerForm = reactive({ email: '', password: '', confirmPassword: '', code: null });
 const domainList = settingStore.domainList;
+const hasDomains = computed(() => domainList && domainList.length > 0);
 const suffixPopperClass = computed(() =>
   settingStore.settings?.loginTemplate === 'gradient' ? 'xi-aurora-dropdown' : ''
 );
@@ -396,19 +405,20 @@ function bind() {
   if (bindForm.email.length < settingStore.settings.minEmailPrefix) {
     ElMessage({ message: t('minEmailPrefix', { msg: settingStore.settings.minEmailPrefix }), type: 'error', plain: true }); return;
   }
-  if (!isEmail(bindForm.email + suffix.value)) { ElMessage({ message: t('notEmailMsg'), type: 'error', plain: true }); return; }
+  const bindSuffix = hasDomains.value ? suffix.value : '';
+  if (!isEmail(bindForm.email + bindSuffix)) { ElMessage({ message: t('notEmailMsg'), type: 'error', plain: true }); return; }
   if (settingStore.settings.regKey === 0 && !bindForm.code) {
     ElMessage({ message: t('emptyRegKeyMsg'), type: 'error', plain: true }); return;
   }
   bindLoading.value = true;
-  oauthBindUser({ email: bindForm.email + suffix.value, oauthUserId: bindForm.oauthUserId, code: bindForm.code })
+  oauthBindUser({ email: bindForm.email + bindSuffix, oauthUserId: bindForm.oauthUserId, code: bindForm.code })
     .then(data => { saveToken(data.token); })
     .catch(() => { bindLoading.value = false; });
 }
 
 const submit = () => {
   if (!form.email) { ElMessage({ message: t('emptyEmailMsg'), type: 'error', plain: true }); return; }
-  const email = form.email + (settingStore.settings.loginDomain === 0 ? suffix.value : '');
+  const email = form.email + (settingStore.settings.loginDomain === 0 && hasDomains.value ? suffix.value : '');
   if (!isEmail(email)) { ElMessage({ message: t('notEmailMsg'), type: 'error', plain: true }); return; }
   if (!form.password) { ElMessage({ message: t('emptyPwdMsg'), type: 'error', plain: true }); return; }
   loginLoading.value = true;
@@ -436,7 +446,8 @@ function submitRegister() {
   if (registerForm.email.length < settingStore.settings.minEmailPrefix) {
     ElMessage({ message: t('minEmailPrefix', { msg: settingStore.settings.minEmailPrefix }), type: 'error', plain: true }); return;
   }
-  if (!isEmail(registerForm.email + suffix.value)) { ElMessage({ message: t('notEmailMsg'), type: 'error', plain: true }); return; }
+  const regSuffix = hasDomains.value ? suffix.value : '';
+  if (!isEmail(registerForm.email + regSuffix)) { ElMessage({ message: t('notEmailMsg'), type: 'error', plain: true }); return; }
   if (!registerForm.password) { ElMessage({ message: t('emptyPwdMsg'), type: 'error', plain: true }); return; }
   if (registerForm.password.length < 6) { ElMessage({ message: t('pwdLengthMsg'), type: 'error', plain: true }); return; }
   if (registerForm.password !== registerForm.confirmPassword) {
@@ -460,7 +471,7 @@ function submitRegister() {
     return;
   }
   registerLoading.value = true;
-  register({ email: registerForm.email + suffix.value, password: registerForm.password, token: verifyToken, code: registerForm.code })
+  register({ email: registerForm.email + regSuffix, password: registerForm.password, token: verifyToken, code: registerForm.code })
     .then(({ regVerifyOpen }) => {
       show.value = 'login';
       Object.assign(registerForm, { email: '', password: '', confirmPassword: '', code: '' });
