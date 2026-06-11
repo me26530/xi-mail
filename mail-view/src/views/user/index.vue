@@ -33,7 +33,7 @@
               :style="params.loginSort ? 'color: var(--el-color-primary)' : ''" />
       </el-tooltip>
       <el-tooltip :content="$t('refresh')" placement="top">
-        <Icon class="icon" icon="ion:reload" width="18" height="18" @click="refresh"/>
+        <Icon class="icon" icon="mingcute:refresh-2-line" width="18" height="18" @click="refresh"/>
       </el-tooltip>
       <el-tooltip :content="$t('batchBan')" placement="top">
         <Icon class="icon" icon="ion:ban-outline" width="19" height="19" @click="batchBan"/>
@@ -346,12 +346,12 @@
           <el-dropdown-item v-if="rightClickUser.type !== 0">
             <template #default>
               <div class="right-dropdown-item" v-if="rightClickUser.isDel !== 1" @click="setStatus(rightClickUser)" >
-                <Icon icon="ion:reload" v-if="rightClickUser.status" style="margin-left: 1px;margin-right: 1px" width="19" height="19" />
+                <Icon icon="mingcute:refresh-2-line" v-if="rightClickUser.status" style="margin-left: 1px;margin-right: 1px" width="19" height="19" />
                 <Icon icon="ion:ban-outline" v-else style="margin-left: 1px;margin-right: 1px" width="19" height="19" />
                 <span>{{ setRightStatusName(rightClickUser) }}</span>
               </div>
               <div class="right-dropdown-item" v-else @click="restore(rightClickUser)">
-                <Icon icon="ion:reload" style="margin-left: 1px;margin-right: 1px" width="19" height="19" />
+                <Icon icon="mingcute:refresh-2-line" style="margin-left: 1px;margin-right: 1px" width="19" height="19" />
                 <span>{{ t('restoreUser') }}</span>
               </div>
             </template>

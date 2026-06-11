@@ -1208,7 +1208,7 @@ defineOptions({
   name: 'sys-setting'
 })
 
-const currentVersion = 'v3.2.0'
+const currentVersion = 'v3.2.1'
 
 /* ── Settings navigation ── */
 const activeSection = ref('website')

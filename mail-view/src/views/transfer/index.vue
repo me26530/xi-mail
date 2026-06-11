@@ -2,7 +2,7 @@
   <div class="transfer-box">
     <div class="header-actions">
       <el-tooltip :content="$t('refresh')" placement="bottom">
-        <Icon class="icon" icon="ion:reload" width="20" height="20" @click="loadAll" />
+        <Icon class="icon" icon="mingcute:refresh-2-line" width="20" height="20" @click="loadAll" />
       </el-tooltip>
     </div>
 
