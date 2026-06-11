@@ -48,16 +48,13 @@ const settingService = {
 
 		let domainList;
 		if (managedDomains.length > 0) {
-			// Use only enabled managed domains
 			domainList = managedDomains.filter(d => d.enabled !== false).map(d => '@' + d.domain);
 		} else {
-			// Fall back to wrangler.toml env
 			let envDomain = c.env.domain;
 			if (typeof envDomain === 'string') {
-				try { envDomain = JSON.parse(envDomain); } catch (error) { throw new BizError(t('notJsonDomain')); }
+				try { envDomain = JSON.parse(envDomain); } catch (error) { envDomain = []; }
 			}
-			if (!envDomain) throw new BizError(t('noDomainVariable'));
-			domainList = envDomain.map(item => '@' + item);
+			domainList = envDomain ? envDomain.map(item => '@' + item) : [];
 		}
 		setting.domainList = domainList;
 
@@ -257,6 +254,7 @@ const settingService = {
 		emailKeywordBlacklist: settingRow.emailKeywordBlacklist || [],
 		domainMapping: settingRow.domainMapping || {},
 		regKeyHint: settingRow.regKeyHint || '',
+		regKeyHintEn: settingRow.regKeyHintEn || '',
 		regKeyLink: settingRow.regKeyLink || '',
 		managedDomains: settingRow.managedDomains || [],
 		colorTheme: settingRow.colorTheme || 'indigo',
@@ -264,6 +262,16 @@ const settingService = {
 		layoutMode: settingRow.layoutMode || 'default',
 		subWorkers: await this.getSubWorkersSafe(c),
 		};
+	},
+
+	getValidDomains(setting) {
+		return (setting.domainList || []).map(d => d.replace(/^@/, ''));
+	},
+
+	isDomainValid(setting, domain) {
+		const validDomains = this.getValidDomains(setting);
+		if (validDomains.length === 0) return true;
+		return validDomains.includes(domain);
 	},
 
 	async getSubWorkersSafe(c) {

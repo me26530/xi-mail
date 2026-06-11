@@ -384,7 +384,8 @@ const userService = {
 
 		const { email, type, password } = params;
 
-		if (!c.env.domain.includes(emailUtils.getDomain(email))) {
+		const setting = await settingService.query(c);
+		if (!settingService.isDomainValid(setting, emailUtils.getDomain(email))) {
 			throw new BizError(t('notEmailDomain'));
 		}
 

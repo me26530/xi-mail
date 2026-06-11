@@ -16,7 +16,7 @@
         <Icon class="icon" icon="iconoir:search" @click="search" width="20" height="20"/>
       </el-tooltip>
       <el-tooltip :content="$t('refresh')" placement="top">
-        <Icon class="icon" icon="ion:reload" width="18" height="18" @click="refresh"/>
+        <Icon class="icon" icon="mingcute:refresh-2-line" width="18" height="18" @click="refresh"/>
       </el-tooltip>
       <el-tooltip :content="$t('clearUnused')" placement="top">
         <Icon class="icon" icon="fluent:broom-sparkle-16-regular" width="22" height="22" @click="clearNotUse"/>
