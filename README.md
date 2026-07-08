@@ -6,6 +6,7 @@
 
 二次开发自 [cloud-mail](https://github.com/eoao/cloud-mail) · UI 全面重设计 · 功能持续扩展
 
+[![Version](https://img.shields.io/badge/Version-v3.3.1-6366f1)](https://github.com/PastKing/xi-mail)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![GitHub release](https://img.shields.io/github/v/release/PastKing/xi-mail?color=6366f1)](https://github.com/PastKing/xi-mail/releases)
 [![Stars](https://img.shields.io/github/stars/PastKing/xi-mail?style=flat&color=6366f1)](https://github.com/PastKing/xi-mail/stargazers)
@@ -55,14 +56,16 @@ Xi-Mail 是基于 **Cloudflare Workers / D1 / KV / R2** 构建的全栈自托管
 - 采用 **TailwindCSS 4** + **@vueuse/motion** 动画库重构前端样式系统
 - 登录 / 注册页：5 套模板（极光 / 简约 / 分栏 / 极光动效 / 毛玻璃），7 套主题色预设，系统设置可一键切换并持久化
 - 登录后布局：完整侧边栏 / 精简侧边栏（仅图标）/ 顶栏导航，三种模式自由切换
-- 侧边栏：深色极简风格，图标统一；精简模式宽度收缩至 56px 并显示 Tooltip
+- 侧边栏：宽度 200px，深色极简风格；精简模式收缩至 56px 并显示 Tooltip
 - 顶栏：紧凑布局，渐变 Compose 按钮，用户信息面板优化
+- **全站图标统一**：功能图标统一为 `mingcute` 图标集，工具栏尺寸统一 18px，视觉风格一致
 - 全局设计 Token：indigo-violet 渐变色系、彩色阴影、统一圆角
 - **顶栏语言切换按钮**：一键切换中文 / 英文界面，实时生效并持久化保存到用户账号（跨设备同步）
 
 ### 👤 用户系统增强
 - **Display ID**：用户 ID 改为随机字母数字组合（`xxxx-xxxx-xxxx`），不再使用纯数字自增
-- Display ID 展示于：用户详情面板、个人设置页、顶栏头像悬浮卡片
+- Display ID 展示于：用户详情面板、个人设置页、顶栏头像悬浮卡片，**支持点击复制**
+- **个人设置页**（`/settings`）：信息顺序重排（邮箱 → 用户 ID → 用户名 → 密码），邮箱与用户 ID 均可点击复制
 - **邮箱转移**：用户可将邮箱账户及其全部邮件转移给其他用户（通过 Display ID 指定），接收方可确认或拒绝
 
 ### 📬 账号管理优化
@@ -86,10 +89,14 @@ Xi-Mail 是基于 **Cloudflare Workers / D1 / KV / R2** 构建的全栈自托管
 - 用户关联邮箱账号支持批量删除
 
 ### ⚙️ 系统设置增强
-- **外观模板系统**：系统设置重构为「左侧导航 + 右侧内容」双栏布局，分 7 个分区（网站 / 安全 / 注册 / 域名 / 服务集成 / 外观 / 关于）
+- **外观模板系统**：系统设置重构为「左侧导航 + 右侧内容」双栏布局，分 7 个分区（网站 / 安全 / 注册 / 域名 / 服务集成 / 外观 / 关于），移动端适配顶部 Tab 导航
 - **域名在线管理**：无需修改 `wrangler.toml`，直接在系统设置中新增、删除、启用 / 禁用邮箱域名，配置完成后 `domain` 变量可留空
 - **全局 API Token**：管理员可开启并生成全局 Token，通过 `x-admin-auth` 请求头无需登录直接查询邮件
-- **邮件地址关键词黑名单** + **发件人域名黑名单**：防注册敏感词 / 防邮件轰炸
+- **邮件地址关键词黑名单**：防注册敏感词
+- **发件人域名屏蔽**（黑名单 / 白名单二合一）：
+  - **黑名单模式**（默认）：屏蔽名单内的发件域名，其他都收
+  - **白名单模式**：仅接收授权域名的邮件，未授权服务商一律拒收
+  - 同时检查 SMTP 信封发件人与邮件头 From 地址，支持子域名匹配
 - **注册码提示与获取链接**：启用注册码后可配置提示文字及跳转链接，支持中英文分别配置
 - **子 Worker 管理**：系统设置中可添加 / 测试 / 启用禁用子 Worker，聚合多 Worker 邮件数据
 
@@ -101,6 +108,23 @@ Xi-Mail 是基于 **Cloudflare Workers / D1 / KV / R2** 构建的全栈自托管
 
 ### 🔎 搜索增强
 - **用户管理子账号搜索**：在 `/all-users` 搜索邮箱时，可同时匹配该用户名下创建的所有子账号邮箱
+
+---
+
+## 📋 版本记录
+
+> 当前版本：**v3.3.1** · 版本号规则：`2.x.y`（`x` = 小功能，`y` = 修 bug / 优化）
+
+| 版本 | 要点 |
+|------|------|
+| **v3.3.1** | 发件人过滤合并入域名屏蔽；`/settings` 重排 + ID 点击复制；工具栏图标尺寸统一 18px |
+| **v3.3.0** | 发件人白名单模式（仅授权域名可收件）；全站图标统一 mingcute |
+| **v3.2.x** | 发件人域名屏蔽修复（信封 + From 双检）；侧边栏收窄；刷新图标统一 |
+| **v3.1.0** | 子 Worker 聚合；语言偏好持久化到用户账号 |
+| **v3.0.0** | 前后端分离；多 Server 架构；standalone 独立部署 |
+| **v2.0.0** | 外观模板系统；登录后主布局切换；系统设置页重构 |
+
+完整变更记录见项目内 `git.md`（本地维护，不上传 GitHub）。
 
 ---
 
@@ -198,6 +222,20 @@ npx wrangler deploy
 # 7. 初始化数据库表结构（首次部署后访问）
 # 在浏览器中访问：https://your-worker.workers.dev/api/init/<JWT_SECRET>
 ```
+
+### 独立前端部署（可选）
+
+若只需部署前端、后端 Worker 单独托管：
+
+```bash
+cd mail-view
+npm install
+npm run build:standalone   # 输出到 dist/
+# 部署 dist/ 到 CF Pages / Vercel 等静态托管
+# 构建时通过环境变量指定 Worker 地址：VITE_BASE_URL=https://your-worker.workers.dev/api
+```
+
+首次启动会自动跳转 `/setup` 引导配置 Worker 地址；也可在 `vercel.json` 中配置构建命令与输出目录。
 
 ### wrangler.toml 关键字段说明
 
