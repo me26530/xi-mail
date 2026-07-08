@@ -372,7 +372,7 @@ const en = {
     emailKeywordBlacklistPlaceholder: 'Enter keyword and press Enter, e.g. admin, root, user',
     senderDomainBlacklist: 'Sender Domain Blacklist',
     senderDomainBlacklistDesc: 'Block emails from specific sender domains to defend against email bombing',
-    senderDomainBlacklistHint: 'Add sender domains to block (domain only, e.g. spam.com). Emails from these domains will be rejected',
+    senderDomainBlacklistHint: 'Add sender domains to block (domain only, e.g. spam.com). Subdomains (e.g. a.spam.com) are also blocked; both envelope sender and header From are checked',
     senderDomainBlacklistPlaceholder: 'Enter domain and press Enter, e.g. spam.com',
     regKeyHint: 'Reg Code Hint',
     regKeyHintDesc: 'Hint text shown below the registration code field, e.g. "Contact admin to get one"',

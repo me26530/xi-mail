@@ -372,7 +372,7 @@ const zh = {
     emailKeywordBlacklistPlaceholder: '输入关键词用回车添加，如 admin, root, user',
     senderDomainBlacklist: '发件人域名屏蔽',
     senderDomainBlacklistDesc: '屏蔽来自指定域名的发件人，系统将直接拒绝其邮件，可防御邮件轰炸',
-    senderDomainBlacklistHint: '添加要屏蔽的发件人域名（仅填写域名部分，如 spam.com），来自这些域名的邮件将被直接拒绝',
+    senderDomainBlacklistHint: '添加要屏蔽的发件人域名（仅填写域名部分，如 spam.com），其子域名（如 a.spam.com）也会被拦截；同时检查信封发件人和邮件头 From 地址',
     senderDomainBlacklistPlaceholder: '输入域名用回车添加，如 spam.com',
     regKeyHint: '注册码获取提示',
     regKeyHintDesc: '注册页注册码输入框下方显示的提示文字，例如"联系管理员获取"',
