@@ -52,16 +52,16 @@
           <el-option key="4" :label="$t('noRecipientTitle')" value="noone"/>
         </el-select>
         <el-tooltip :content="$t('searchAction')" placement="top">
-          <Icon class="icon" icon="mingcute:search-line" @click="search" width="20" height="20"/>
+          <Icon class="icon" icon="mingcute:search-line" @click="search" width="18" height="18"/>
         </el-tooltip>
         <el-tooltip :content="$t('sortByTime')" placement="top">
           <Icon class="icon" @click="changeTimeSort" icon="mingcute:sort-descending-line"
-                v-if="params.timeSort === 0" width="20" height="20"/>
+                v-if="params.timeSort === 0" width="18" height="18"/>
           <Icon class="icon" @click="changeTimeSort" icon="mingcute:sort-ascending-line" v-else
-                width="20" height="20"/>
+                width="18" height="18"/>
         </el-tooltip>
         <el-tooltip :content="$t('batchDelete')" placement="top">
-          <Icon class="icon clear" icon="mingcute:broom-line" width="20" height="20" @click="openBathDelete"/>
+          <Icon class="icon clear" icon="mingcute:broom-line" width="18" height="18" @click="openBathDelete"/>
         </el-tooltip>
       </template>
     </emailScroll>

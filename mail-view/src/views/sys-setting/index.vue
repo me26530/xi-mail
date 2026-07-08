@@ -64,7 +64,7 @@
                 <div>
                   <span>{{ $t('regKeyHint') }}</span>
                   <el-tooltip effect="dark" :content="$t('regKeyHintDesc')">
-                    <Icon class="warning" icon="fe:warning" width="18" height="18"/>
+                    <Icon class="warning" icon="mingcute:information-line" width="18" height="18"/>
                   </el-tooltip>
                 </div>
                 <div class="forward">
@@ -81,7 +81,7 @@
                 <div>
                   <span>{{ $t('regKeyHintEn') }}</span>
                   <el-tooltip effect="dark" :content="$t('regKeyHintEnDesc')">
-                    <Icon class="warning" icon="fe:warning" width="18" height="18"/>
+                    <Icon class="warning" icon="mingcute:information-line" width="18" height="18"/>
                   </el-tooltip>
                 </div>
                 <div class="forward">
@@ -98,7 +98,7 @@
                 <div>
                   <span>{{ $t('regKeyLink') }}</span>
                   <el-tooltip effect="dark" :content="$t('regKeyLinkDesc')">
-                    <Icon class="warning" icon="fe:warning" width="18" height="18"/>
+                    <Icon class="warning" icon="mingcute:information-line" width="18" height="18"/>
                   </el-tooltip>
                 </div>
                 <div class="forward">
@@ -122,7 +122,7 @@
                 <div>
                   <span>{{ $t('multipleEmail') }}</span>
                   <el-tooltip effect="dark" :content="$t('multipleEmailDesc')">
-                    <Icon class="warning" icon="fe:warning" width="18" height="18"/>
+                    <Icon class="warning" icon="mingcute:information-line" width="18" height="18"/>
                   </el-tooltip>
                 </div>
                 <div>
@@ -135,7 +135,7 @@
                 <div class="email-title">
                   <span>{{ setting.title }}</span>
                   <el-button class="opt-button" size="small" type="primary" @click="editTitleShow = true">
-                    <Icon icon="lsicon:edit-outline" width="16" height="16"/>
+                    <Icon icon="mingcute:edit-2-line" width="16" height="16"/>
                   </el-button>
                 </div>
               </div>
@@ -153,7 +153,7 @@
                 <div>
                   <span>{{ $t('autoBan') }}</span>
                   <el-tooltip effect="dark" :content="$t('autoBanDesc')">
-                    <Icon class="warning" icon="fe:warning" width="18" height="18"/>
+                    <Icon class="warning" icon="mingcute:information-line" width="18" height="18"/>
                   </el-tooltip>
                 </div>
                 <div class="auto-ban-right">
@@ -165,7 +165,7 @@
                 <div>
                   <span>{{ $t('banMessage') }}</span>
                   <el-tooltip effect="dark" :content="$t('banMessageDesc')">
-                    <Icon class="warning" icon="fe:warning" width="18" height="18"/>
+                    <Icon class="warning" icon="mingcute:information-line" width="18" height="18"/>
                   </el-tooltip>
                 </div>
                 <div>
@@ -176,25 +176,30 @@
                 <div>
                   <span>{{ $t('emailKeywordBlacklist') }}</span>
                   <el-tooltip effect="dark" :content="$t('emailKeywordBlacklistDesc')">
-                    <Icon class="warning" icon="fe:warning" width="18" height="18"/>
+                    <Icon class="warning" icon="mingcute:information-line" width="18" height="18"/>
                   </el-tooltip>
                 </div>
                 <div class="forward">
                   <el-button class="opt-button" size="small" type="primary" @click="keywordBlacklistShow = true">
-                    <Icon icon="fluent:settings-48-regular" width="18" height="18"/>
+                    <Icon icon="mingcute:settings-3-line" width="18" height="18"/>
                   </el-button>
                 </div>
               </div>
               <div class="setting-item">
                 <div>
                   <span>{{ $t('senderDomainBlacklist') }}</span>
-                  <el-tooltip effect="dark" :content="$t('senderDomainBlacklistDesc')">
-                    <Icon class="warning" icon="fe:warning" width="18" height="18"/>
+                  <el-tooltip effect="dark" :content="$t('senderFilterModeDesc')">
+                    <Icon class="warning" icon="mingcute:information-line" width="18" height="18"/>
                   </el-tooltip>
                 </div>
-                <div class="forward">
-                  <el-button class="opt-button" size="small" type="primary" @click="senderDomainBlacklistShow = true">
-                    <Icon icon="fluent:settings-48-regular" width="18" height="18"/>
+                <div class="forward" style="display: flex; gap: 8px; align-items: center;">
+                  <el-select v-model="setting.senderFilterMode" style="width: 110px" @change="change">
+                    <el-option :label="$t('senderFilterBlacklist')" :value="0"/>
+                    <el-option :label="$t('senderFilterWhitelist')" :value="1"/>
+                  </el-select>
+                  <el-button class="opt-button" size="small" type="primary"
+                    @click="setting.senderFilterMode === 1 ? senderDomainWhitelistShow = true : senderDomainBlacklistShow = true">
+                    <Icon icon="mingcute:settings-3-line" width="18" height="18"/>
                   </el-button>
                 </div>
               </div>
@@ -217,7 +222,7 @@
                 <!-- Token field -->
                 <div class="gt-field-row">
                   <div class="gt-token-box">
-                    <Icon icon="mdi:key-variant" width="15" height="15" class="gt-key-icon"/>
+                    <Icon icon="mingcute:key-2-line" width="15" height="15" class="gt-key-icon"/>
                     <span class="gt-token-text" :class="{ masked: !globalTokenVisible }">
                       {{ globalTokenVisible ? (globalToken || $t('noToken')) : (globalToken ? '•'.repeat(32) : $t('noToken')) }}
                     </span>
@@ -230,7 +235,7 @@
                     </el-tooltip>
                     <el-tooltip :content="$t('copy')" v-if="globalToken">
                       <el-button size="small" circle plain @click="copyGlobalToken">
-                        <Icon icon="mdi:content-copy" width="14" height="14"/>
+                        <Icon icon="mingcute:copy-2-line" width="14" height="14"/>
                       </el-button>
                     </el-tooltip>
                     <el-button size="small" type="primary" @click="onGenerateGlobalToken" :loading="globalTokenGenerating">
@@ -259,7 +264,7 @@
               </template>
 
               <div v-else class="gt-disabled-tip">
-                <Icon icon="mdi:lock-outline" width="16" height="16"/>
+                <Icon icon="mingcute:lock-line" width="16" height="16"/>
                 <span>{{ $t('globalTokenDisabledTip') }}</span>
               </div>
             </div>
@@ -278,7 +283,7 @@
                 </div>
                 <div class="forward">
                   <el-button class="opt-button" size="small" type="primary" @click="openEmailPrefix">
-                    <Icon icon="fluent:settings-48-regular" width="18" height="18"/>
+                    <Icon icon="mingcute:settings-3-line" width="18" height="18"/>
                   </el-button>
                 </div>
               </div>
@@ -286,7 +291,7 @@
                 <div>
                   <span>{{ $t('randomPrefixLength') }}</span>
                   <el-tooltip effect="dark" :content="$t('randomPrefixDesc')">
-                    <Icon class="warning" icon="fe:warning" width="18" height="18"/>
+                    <Icon class="warning" icon="mingcute:information-line" width="18" height="18"/>
                   </el-tooltip>
                 </div>
                 <div>
@@ -297,12 +302,12 @@
                 <div>
                   <span>{{ $t('domainMapping') }}</span>
                   <el-tooltip effect="dark" :content="$t('domainMappingDesc')">
-                    <Icon class="warning" icon="fe:warning" width="18" height="18"/>
+                    <Icon class="warning" icon="mingcute:information-line" width="18" height="18"/>
                   </el-tooltip>
                 </div>
                 <div class="forward">
                   <el-button class="opt-button" size="small" type="primary" @click="domainMappingShow = true">
-                    <Icon icon="fluent:settings-48-regular" width="18" height="18"/>
+                    <Icon icon="mingcute:settings-3-line" width="18" height="18"/>
                   </el-button>
                 </div>
               </div>
@@ -324,7 +329,7 @@
                 <div>
                   <span>{{ $t('autoRefresh') }}</span>
                   <el-tooltip effect="dark" :content="$t('autoRefreshDesc')">
-                    <Icon class="warning" icon="fe:warning" width="18" height="18"/>
+                    <Icon class="warning" icon="mingcute:information-line" width="18" height="18"/>
                   </el-tooltip>
                 </div>
                 <div>
@@ -354,7 +359,7 @@
                 <div>
                   <span>{{ $t('noRecipientTitle') }}</span>
                   <el-tooltip effect="dark" :content="$t('noRecipientDesc')">
-                    <Icon class="warning" icon="fe:warning" width="18" height="18"/>
+                    <Icon class="warning" icon="mingcute:information-line" width="18" height="18"/>
                   </el-tooltip>
                 </div>
                 <div>
@@ -367,11 +372,11 @@
                 <div>
                   <el-button class="opt-button" style="margin-top: 0" @click="openResendList" size="small"
                              type="primary">
-                    <Icon icon="ic:round-list" width="18" height="18"/>
+                    <Icon icon="mingcute:list-check-line" width="18" height="18"/>
                   </el-button>
                   <el-button class="opt-button" style="margin-top: 0" @click="openResendForm" size="small"
                              type="primary">
-                    <Icon icon="material-symbols:add-rounded" width="16" height="16"/>
+                    <Icon icon="mingcute:add-line" width="16" height="16"/>
                   </el-button>
                 </div>
               </div>
@@ -389,13 +394,13 @@
                 <div>
                   <span>{{ $t('domainList') }}</span>
                   <el-tooltip effect="dark" :content="$t('domainManagementDesc')">
-                    <Icon class="warning" icon="fe:warning" width="18" height="18"/>
+                    <Icon class="warning" icon="mingcute:information-line" width="18" height="18"/>
                   </el-tooltip>
                 </div>
                 <div class="forward">
                   <span class="domain-count">{{ managedDomainsData.length }}</span>
                   <el-button class="opt-button" size="small" type="primary" @click="openDomainManagement">
-                    <Icon icon="fluent:settings-48-regular" width="18" height="18"/>
+                    <Icon icon="mingcute:settings-3-line" width="18" height="18"/>
                   </el-button>
                 </div>
               </div>
@@ -413,13 +418,13 @@
                 <div>
                   <span>{{ $t('osDomain') }}</span>
                   <el-tooltip effect="dark" :content="$t('ossDomainDesc')">
-                    <Icon class="warning" icon="fe:warning" width="18" height="18"/>
+                    <Icon class="warning" icon="mingcute:information-line" width="18" height="18"/>
                   </el-tooltip>
                 </div>
                 <div class="r2domain">
                   <span>{{ setting.r2Domain || '' }}</span>
                   <el-button class="opt-button" size="small" type="primary" @click="r2DomainShow = true">
-                    <Icon icon="lsicon:edit-outline" width="16" height="16"/>
+                    <Icon icon="mingcute:edit-2-line" width="16" height="16"/>
                   </el-button>
                 </div>
               </div>
@@ -429,7 +434,7 @@
                 </div>
                 <div class="r2domain">
                   <el-button class="opt-button" size="small" type="primary" @click="addS3Show = true">
-                    <Icon icon="fluent:settings-48-regular" width="16" height="16"/>
+                    <Icon icon="mingcute:settings-3-line" width="16" height="16"/>
                   </el-button>
                 </div>
               </div>
@@ -454,7 +459,7 @@
                 <div class="forward">
                   <span>{{ setting.tgBotStatus === 0 ? $t('enabled') : $t('disabled') }}</span>
                   <el-button class="opt-button" size="small" type="primary" @click="openTgSetting">
-                    <Icon icon="fluent:settings-48-regular" width="18" height="18"/>
+                    <Icon icon="mingcute:settings-3-line" width="18" height="18"/>
                   </el-button>
                 </div>
               </div>
@@ -463,7 +468,7 @@
                 <div class="forward">
                   <span>{{ setting.forwardStatus === 0 ? $t('enabled') : $t('disabled') }}</span>
                   <el-button class="opt-button" size="small" type="primary" @click="openThirdEmailSetting">
-                    <Icon icon="fluent:settings-48-regular" width="18" height="18"/>
+                    <Icon icon="mingcute:settings-3-line" width="18" height="18"/>
                   </el-button>
                 </div>
               </div>
@@ -472,7 +477,7 @@
                 <div class="forward">
                   <span>{{ setting.ruleType === 0 ? $t('forwardAll') : $t('rules') }}</span>
                   <el-button class="opt-button" size="small" type="primary" @click="openForwardRules">
-                    <Icon icon="fluent:settings-48-regular" width="18" height="18"/>
+                    <Icon icon="mingcute:settings-3-line" width="18" height="18"/>
                   </el-button>
                 </div>
               </div>
@@ -487,7 +492,7 @@
                 <div><span>{{ $t('signUpVerification') }}</span></div>
                 <div>
                   <el-button class="opt-button" size="small" type="primary" @click="openRegVerifyCount">
-                    <Icon icon="fluent:settings-48-regular" width="18" height="18"/>
+                    <Icon icon="mingcute:settings-3-line" width="18" height="18"/>
                   </el-button>
                   <el-select
                       @change="change"
@@ -506,7 +511,7 @@
                 <div><span>{{ $t('addEmailVerification') }}</span></div>
                 <div>
                   <el-button class="opt-button" size="small" type="primary" @click="openAddVerifyCount">
-                    <Icon icon="fluent:settings-48-regular" width="18" height="18"/>
+                    <Icon icon="mingcute:settings-3-line" width="18" height="18"/>
                   </el-button>
                   <el-select
                       @change="change"
@@ -526,7 +531,7 @@
                 <div class="bot-verify">
                   <span>{{ setting.siteKey }}</span>
                   <el-button class="opt-button" size="small" type="primary" @click="turnstileShow = true">
-                    <Icon icon="lsicon:edit-outline" width="16" height="16"/>
+                    <Icon icon="mingcute:edit-2-line" width="16" height="16"/>
                   </el-button>
                 </div>
               </div>
@@ -535,7 +540,7 @@
                 <div class="bot-verify">
                   <span> {{ setting.secretKey }} </span>
                   <el-button class="opt-button" size="small" type="primary" @click="turnstileShow = true">
-                    <Icon icon="lsicon:edit-outline" width="16" height="16"/>
+                    <Icon icon="mingcute:edit-2-line" width="16" height="16"/>
                   </el-button>
                 </div>
               </div>
@@ -550,7 +555,7 @@
                 <div class="forward">
                   <span>{{ setting.notice === 0 ? $t('enabled') : $t('disabled') }}</span>
                   <el-button class="opt-button" size="small" type="primary" @click="openNoticePopupSetting">
-                    <Icon icon="fluent:settings-48-regular" width="18" height="18"/>
+                    <Icon icon="mingcute:settings-3-line" width="18" height="18"/>
                   </el-button>
                 </div>
               </div>
@@ -558,7 +563,7 @@
                 <div><span>{{ $t('popUp') }}</span></div>
                 <div class="forward">
                   <el-button class="opt-button" size="small" type="primary" @click="openNoticePopup">
-                    <Icon icon="mynaui:click-solid" width="18" height="18"/>
+                    <Icon icon="mingcute:hand-finger-line" width="18" height="18"/>
                   </el-button>
                 </div>
               </div>
@@ -761,7 +766,7 @@
                   <el-button @click="jump('https://github.com/PastKing/xi-mail/releases')">
                     {{ currentVersion }}
                     <template #icon>
-                      <Icon icon="qlementine-icons:version-control-16" style="font-size: 20px" color="#1890FF"/>
+                      <Icon icon="mingcute:git-branch-line" style="font-size: 20px" color="#1890FF"/>
                     </template>
                   </el-button>
                 </el-badge>
@@ -772,13 +777,13 @@
                   <el-button @click="jump('https://github.com/PastKing/xi-mail')">
                     Github
                     <template #icon>
-                      <Icon icon="codicon:github-inverted" width="22" height="22"/>
+                      <Icon icon="mingcute:github-line" width="22" height="22"/>
                     </template>
                   </el-button>
                   <el-button @click="jump('https://t.me/pk_oa')">
                     Telegram
                     <template #icon>
-                      <Icon icon="logos:telegram" width="30" height="30"/>
+                      <Icon icon="mingcute:telegram-line" width="22" height="22"/>
                     </template>
                   </el-button>
                 </div>
@@ -793,7 +798,7 @@
                     </code>
                     <el-tooltip :content="$t('copy')">
                       <el-button circle size="small" plain @click="copyAddr('0x555390f5c07cf76cc344f42612196e8669e3586b')">
-                        <Icon icon="mdi:content-copy" width="13" height="13"/>
+                        <Icon icon="mingcute:copy-2-line" width="13" height="13"/>
                       </el-button>
                     </el-tooltip>
                   </div>
@@ -804,7 +809,7 @@
                     </code>
                     <el-tooltip :content="$t('copy')">
                       <el-button circle size="small" plain @click="copyAddr('TVqK4thJCsaaWvp1Dah9F5CFZ1iqw75f4G')">
-                        <Icon icon="mdi:content-copy" width="13" height="13"/>
+                        <Icon icon="mingcute:copy-2-line" width="13" height="13"/>
                       </el-button>
                     </el-tooltip>
                   </div>
@@ -862,7 +867,7 @@
           <div class="forward-head">
             <span class="forward-set-title">{{ $t('tgBot') }}</span>
             <el-tooltip effect="dark" :content="$t('tgBotDesc')">
-              <Icon class="warning" icon="fe:warning" width="18" height="18"/>
+              <Icon class="warning" icon="mingcute:information-line" width="18" height="18"/>
             </el-tooltip>
           </div>
         </template>
@@ -923,7 +928,7 @@
           <div class="forward-head">
             <span class="forward-set-title">{{ $t('otherEmail') }}</span>
             <el-tooltip effect="dark" :content="$t('otherEmailDesc')">
-              <Icon class="warning" icon="fe:warning" width="18" height="18"/>
+              <Icon class="warning" icon="mingcute:information-line" width="18" height="18"/>
             </el-tooltip>
           </div>
         </template>
@@ -949,7 +954,7 @@
           <div class="forward-head">
             <span class="forward-set-title">{{ $t('forwardingRules') }}</span>
             <el-tooltip effect="dark" :content="$t('forwardingRulesDesc')">
-              <Icon class="warning" icon="fe:warning" width="18" height="18"/>
+              <Icon class="warning" icon="mingcute:information-line" width="18" height="18"/>
             </el-tooltip>
           </div>
         </template>
@@ -1041,7 +1046,7 @@
             <div class="force-path-style-left">
               <span>ForcePathStyle</span>
               <el-tooltip effect="dark" :content="$t('forcePathStyleDesc')">
-                <Icon class="warning" icon="fe:warning" width="18" height="18"/>
+                <Icon class="warning" icon="mingcute:information-line" width="18" height="18"/>
               </el-tooltip>
             </div>
             <el-switch :before-change="beforeChange" :active-value="0" :inactive-value="1"
@@ -1077,7 +1082,7 @@
                   @change="() => domainItemChange()"
                 />
                 <el-button size="small" type="danger" text @click="removeDomain(idx)">
-                  <Icon icon="material-symbols:delete-outline-rounded" width="16" height="16"/>
+                  <Icon icon="mingcute:delete-2-line" width="16" height="16"/>
                 </el-button>
               </div>
             </div>
@@ -1113,7 +1118,7 @@
             <Icon icon="mingcute:arrow-right-line" width="14" height="14" style="flex-shrink: 0; color: var(--el-text-color-secondary);" />
             <el-input size="small" v-model="domainMappingData[key]" :placeholder="t('displayDomain')" style="flex: 1;" />
             <el-button size="small" type="danger" link @click="delete domainMappingData[key]">
-              <Icon icon="material-symbols:delete-outline-rounded" width="16" height="16"/>
+              <Icon icon="mingcute:delete-2-line" width="16" height="16"/>
             </el-button>
           </div>
           <div class="mapping-row">
@@ -1137,7 +1142,7 @@
             <Icon icon="mingcute:arrow-right-line" width="14" height="14" style="flex-shrink: 0; color: var(--el-text-color-secondary);" />
             <el-input size="small" v-model="newMappingDisplay" :placeholder="t('displayDomain')" style="flex: 1;" />
             <el-button size="small" type="primary" link @click="addDomainMapping">
-              <Icon icon="material-symbols:add-rounded" width="16" height="16"/>
+              <Icon icon="mingcute:add-line" width="16" height="16"/>
             </el-button>
           </div>
           <el-button type="primary" style="width: 100%;" :loading="settingLoading" @click="saveDomainMapping">{{ $t('save') }}</el-button>
@@ -1155,6 +1160,13 @@
           <div style="margin-bottom: 10px; font-size: 13px; color: var(--el-text-color-secondary);">{{ t('senderDomainBlacklistHint') }}</div>
           <el-input-tag style="margin-bottom: 10px;" v-model="senderDomainBlacklistData" :placeholder="t('senderDomainBlacklistPlaceholder')" />
           <el-button type="primary" style="width: 100%;" :loading="settingLoading" @click="saveSenderDomainBlacklist">{{ $t('save') }}</el-button>
+        </div>
+      </el-dialog>
+      <el-dialog v-model="senderDomainWhitelistShow" :title="t('senderDomainWhitelist')" @closed="resetSenderDomainWhitelist">
+        <div class="keyword-blacklist">
+          <div style="margin-bottom: 10px; font-size: 13px; color: var(--el-text-color-secondary);">{{ t('senderDomainWhitelistHint') }}</div>
+          <el-input-tag style="margin-bottom: 10px;" v-model="senderDomainWhitelistData" :placeholder="t('senderDomainWhitelistPlaceholder')" />
+          <el-button type="primary" style="width: 100%;" :loading="settingLoading" @click="saveSenderDomainWhitelist">{{ $t('save') }}</el-button>
         </div>
       </el-dialog>
 
@@ -1208,7 +1220,7 @@ defineOptions({
   name: 'sys-setting'
 })
 
-const currentVersion = 'v3.2.3'
+const currentVersion = 'v3.3.1'
 
 /* ── Settings navigation ── */
 const activeSection = ref('website')
@@ -1263,6 +1275,8 @@ const keywordBlacklistShow = ref(false)
 const keywordBlacklistData = ref([])
 const senderDomainBlacklistShow = ref(false)
 const senderDomainBlacklistData = ref([])
+const senderDomainWhitelistShow = ref(false)
+const senderDomainWhitelistData = ref([])
 const subWorkerDialogShow = ref(false)
 const subWorkerTesting = ref(false)
 const subWorkerAdding = ref(false)
@@ -1449,6 +1463,9 @@ function getSettings() {
     senderDomainBlacklistData.value = Array.isArray(setting.value.senderDomainBlacklist)
       ? [...setting.value.senderDomainBlacklist]
       : (setting.value.senderDomainBlacklist || '').split(',').filter(Boolean)
+    senderDomainWhitelistData.value = Array.isArray(setting.value.senderDomainWhitelist)
+      ? [...setting.value.senderDomainWhitelist]
+      : (setting.value.senderDomainWhitelist || '').split(',').filter(Boolean)
     resendTokenForm.domain = setting.value.domainList[0]
     minEmailPrefix.value = setting.value.minEmailPrefix
     // Init managed domains: use stored list or seed from env domainList
@@ -1851,6 +1868,17 @@ function saveSenderDomainBlacklist() {
   senderDomainBlacklistShow.value = false
 }
 
+function resetSenderDomainWhitelist() {
+  senderDomainWhitelistData.value = Array.isArray(setting.value.senderDomainWhitelist)
+    ? [...setting.value.senderDomainWhitelist]
+    : (setting.value.senderDomainWhitelist || '').split(',').filter(Boolean)
+}
+
+function saveSenderDomainWhitelist() {
+  editSetting({ senderDomainWhitelist: senderDomainWhitelistData.value }, true)
+  senderDomainWhitelistShow.value = false
+}
+
 function saveTurnstileKey() {
   const settingForm = {}
   settingForm.siteKey = turnstileForm.siteKey
@@ -1946,6 +1974,7 @@ function editSetting(settingForm, refreshStatus = true) {
     emailPrefixShow.value = false
     keywordBlacklistShow.value = false
     senderDomainBlacklistShow.value = false
+    senderDomainWhitelistShow.value = false
   }).catch((e) => {
     setting.value = {...setting.value, ...JSON.parse(backup)}
   }).finally(() => {

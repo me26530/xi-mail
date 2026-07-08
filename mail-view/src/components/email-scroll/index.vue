@@ -62,7 +62,7 @@
                     </el-tooltip>
                     <div class="del-status" v-if="item.isDel">
                       <el-tooltip effect="dark" :content="item.isDelContent">
-                        <Icon class="icon" icon="mdi:email-remove" width="20" height="20"/>
+                        <Icon class="icon" icon="mingcute:delete-back-line" width="20" height="20"/>
                       </el-tooltip>
                     </div>
                   </div>
@@ -847,14 +847,14 @@ function handleList(list) {
     email.formatCreateTime = fromNow(email.createTime);
     email.test = t('received')
     const statusIconMap = {
-      0: { icon: 'ic:round-mark-email-read', color: '#51C76B', content: t('received') },
-      1: { icon: 'bi:send-arrow-up-fill',  color: '#51C76B', content: t('sent') },
-      2: { icon: 'bi:send-check-fill',     color: '#51C76B', content: t('delivered') },
-      3: { icon: 'bi:send-x-fill',         color: '#F56C6C', content: t('bounced') },
-      8: { icon: 'bi:send-x-fill',         color: '#F56C6C', content: t('bounced') },
-      4: { icon: 'bi:send-exclamation-fill', color: '#FBBD08', content: t('complained') },
-      5: { icon: 'bi:send-arrow-up-fill',  color: '#FBBD08', content: t('delayed') },
-      7: { icon: 'ic:round-mark-email-read', color: '#FBBD08', content: t('noRecipient') },
+      0: { icon: 'mingcute:mail-open-fill',    color: '#51C76B', content: t('received') },
+      1: { icon: 'mingcute:send-fill',         color: '#51C76B', content: t('sent') },
+      2: { icon: 'mingcute:check-circle-fill', color: '#51C76B', content: t('delivered') },
+      3: { icon: 'mingcute:close-circle-fill', color: '#F56C6C', content: t('bounced') },
+      8: { icon: 'mingcute:close-circle-fill', color: '#F56C6C', content: t('bounced') },
+      4: { icon: 'mingcute:warning-fill',      color: '#FBBD08', content: t('complained') },
+      5: { icon: 'mingcute:time-fill',         color: '#FBBD08', content: t('delayed') },
+      7: { icon: 'mingcute:question-fill',     color: '#FBBD08', content: t('noRecipient') },
     };
 
     if (email.isDel) {

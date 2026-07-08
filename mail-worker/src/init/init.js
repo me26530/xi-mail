@@ -39,6 +39,7 @@ const dbInit = {
 		await this.v3_8DB(c);
 		await this.v3_9DB(c);
 		await this.v4_0DB(c);
+		await this.v4_1DB(c);
 		await settingService.refresh(c);
 		return c.text('success');
 	},
@@ -185,6 +186,15 @@ const dbInit = {
 	async v4_0DB(c) {
 		try {
 			await c.env.db.prepare(`ALTER TABLE setting ADD COLUMN reg_key_hint_en TEXT NOT NULL DEFAULT '';`).run();
+		} catch (e) {}
+	},
+
+	async v4_1DB(c) {
+		try {
+			await c.env.db.prepare(`ALTER TABLE setting ADD COLUMN sender_filter_mode INTEGER NOT NULL DEFAULT 0;`).run();
+		} catch (e) {}
+		try {
+			await c.env.db.prepare(`ALTER TABLE setting ADD COLUMN sender_domain_whitelist TEXT NOT NULL DEFAULT '';`).run();
 		} catch (e) {}
 	},
 

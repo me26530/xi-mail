@@ -1,14 +1,14 @@
 <template>
   <div class="box">
     <div class="header-actions">
-      <Icon class="icon" icon="mingcute:left-line" width="20" height="20" @click="handleBack"/>
+      <Icon class="icon" icon="mingcute:left-line" width="18" height="18" @click="handleBack"/>
       <Icon v-perm="'email:delete'" class="icon" icon="mingcute:delete-2-line" width="18" height="18" @click="handleDelete"/>
       <span class="star" v-if="emailStore.contentData.showStar">
         <Icon class="icon" @click="changeStar" v-if="email.isStar" icon="fluent-color:star-16" width="20" height="20"/>
         <Icon class="icon" @click="changeStar" v-else icon="mingcute:star-line" width="18" height="18"/>
       </span>
-      <Icon class="icon" v-if="emailStore.contentData.showReply" v-perm="'email:send'"  @click="openReply" icon="mingcute:back-2-line" width="19" height="19" />
-      <Icon class="icon" v-if="emailStore.contentData.showReply" v-perm="'email:send'"  @click="openForward" icon="mingcute:share-forward-line" width="19" height="19" />
+      <Icon class="icon" v-if="emailStore.contentData.showReply" v-perm="'email:send'"  @click="openReply" icon="mingcute:back-2-line" width="18" height="18" />
+      <Icon class="icon" v-if="emailStore.contentData.showReply" v-perm="'email:send'"  @click="openForward" icon="mingcute:share-forward-line" width="18" height="18" />
     </div>
     <div></div>
     <el-scrollbar class="scrollbar">
@@ -54,9 +54,9 @@
                 </div>
                 <div class="att-size">{{ formatBytes(att.size) }}</div>
                 <div class="opt-icon att-icon">
-                  <Icon v-if="isImage(att.filename)" icon="hugeicons:view" width="22" height="22" @click="showImage(att.key)"/>
+                  <Icon v-if="isImage(att.filename)" icon="mingcute:eye-2-line" width="20" height="20" @click="showImage(att.key)"/>
                   <a :href="cvtR2Url(att.key)" download>
-                    <Icon icon="system-uicons:push-down" width="22" height="22"/>
+                    <Icon icon="mingcute:download-2-line" width="20" height="20"/>
                   </a>
                 </div>
               </div>

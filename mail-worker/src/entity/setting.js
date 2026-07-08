@@ -53,6 +53,8 @@ export const setting = sqliteTable('setting', {
 	domainMapping: text('domain_mapping').default('{}').notNull(),
 	emailKeywordBlacklist: text('email_keyword_blacklist').default('').notNull(),
 	senderDomainBlacklist: text('sender_domain_blacklist').default('').notNull(),
+	senderFilterMode: integer('sender_filter_mode').default(0).notNull(),
+	senderDomainWhitelist: text('sender_domain_whitelist').default('').notNull(),
 	regKeyHint: text('reg_key_hint').default('').notNull(),
 	regKeyHintEn: text('reg_key_hint_en').default('').notNull(),
 	regKeyLink: text('reg_key_link').default('').notNull(),

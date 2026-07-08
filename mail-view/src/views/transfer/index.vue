@@ -2,7 +2,7 @@
   <div class="transfer-box">
     <div class="header-actions">
       <el-tooltip :content="$t('refresh')" placement="bottom">
-        <Icon class="icon" icon="mingcute:refresh-2-line" width="20" height="20" @click="loadAll" />
+        <Icon class="icon" icon="mingcute:refresh-2-line" width="18" height="18" @click="loadAll" />
       </el-tooltip>
     </div>
 
@@ -72,7 +72,7 @@
             <div v-for="item in incomingTransfers" :key="item.transferId" class="transfer-card incoming">
               <div class="card-left">
                 <div class="card-avatar incoming-avatar">
-                  <Icon icon="hugeicons:mailbox-01" width="15" height="15" />
+                  <Icon icon="mingcute:mailbox-line" width="15" height="15" />
                 </div>
                 <div class="card-info">
                   <div class="card-email">{{ item.accountEmail }}</div>
@@ -103,7 +103,7 @@
             <div v-for="item in receivedHistory" :key="item.transferId" class="transfer-card">
               <div class="card-left">
                 <div class="card-avatar">
-                  <Icon icon="hugeicons:mailbox-01" width="15" height="15" />
+                  <Icon icon="mingcute:mailbox-line" width="15" height="15" />
                 </div>
                 <div class="card-info">
                   <div class="card-email">{{ item.accountEmail }}</div>
@@ -130,7 +130,7 @@
             <div v-for="item in sentTransfers" :key="item.transferId" class="transfer-card">
               <div class="card-left">
                 <div class="card-avatar">
-                  <Icon icon="hugeicons:mailbox-01" width="15" height="15" />
+                  <Icon icon="mingcute:mailbox-line" width="15" height="15" />
                 </div>
                 <div class="card-info">
                   <div class="card-email">{{ item.accountEmail }}</div>

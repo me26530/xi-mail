@@ -2,7 +2,7 @@
   <div class="user-box">
     <div class="header-actions">
       <el-tooltip :content="$t('addUser')" placement="top">
-        <Icon class="icon" icon="ion:add-outline" width="23" height="23" @click="openAdd"/>
+        <Icon class="icon" icon="mingcute:add-line" width="18" height="18" @click="openAdd"/>
       </el-tooltip>
       <div class="search">
         <el-input
@@ -20,32 +20,32 @@
         <el-option :key="-2" :label="$t('deleted')" :value="-2"/>
       </el-select>
       <el-tooltip :content="$t('searchAction')" placement="top">
-        <Icon class="icon" icon="iconoir:search" @click="search" width="20" height="20"/>
+        <Icon class="icon" icon="mingcute:search-line" @click="search" width="18" height="18"/>
       </el-tooltip>
       <el-tooltip :content="$t('sortByTime')" placement="top">
-        <Icon class="icon" @click="changeTimeSort" icon="material-symbols-light:timer-arrow-down-outline"
-              v-if="params.timeSort === 1" width="28" height="28"/>
-        <Icon class="icon" @click="changeTimeSort" icon="material-symbols-light:timer-arrow-up-outline" v-else width="28"
-              height="28"/>
+        <Icon class="icon" @click="changeTimeSort" icon="mingcute:sort-descending-line"
+              v-if="params.timeSort === 1" width="18" height="18"/>
+        <Icon class="icon" @click="changeTimeSort" icon="mingcute:sort-ascending-line" v-else width="18"
+              height="18"/>
       </el-tooltip>
       <el-tooltip :content="$t('sortByLogin')" placement="top">
-        <Icon class="icon" @click="changeLoginSort" icon="mingcute:time-line" width="20" height="20"
+        <Icon class="icon" @click="changeLoginSort" icon="mingcute:time-line" width="18" height="18"
               :style="params.loginSort ? 'color: var(--el-color-primary)' : ''" />
       </el-tooltip>
       <el-tooltip :content="$t('refresh')" placement="top">
         <Icon class="icon" icon="mingcute:refresh-2-line" width="18" height="18" @click="refresh"/>
       </el-tooltip>
       <el-tooltip :content="$t('batchBan')" placement="top">
-        <Icon class="icon" icon="ion:ban-outline" width="19" height="19" @click="batchBan"/>
+        <Icon class="icon" icon="mingcute:forbid-circle-line" width="18" height="18" @click="batchBan"/>
       </el-tooltip>
       <el-tooltip :content="$t('batchEnable')" placement="top">
-        <Icon class="icon" icon="mingcute:check-circle-line" width="19" height="19" @click="batchEnable"/>
+        <Icon class="icon" icon="mingcute:check-circle-line" width="18" height="18" @click="batchEnable"/>
       </el-tooltip>
       <el-tooltip :content="$t('batchRestore')" placement="top">
-        <Icon class="icon" icon="mingcute:restore-line" width="19" height="19" @click="batchRestoreUsers"/>
+        <Icon class="icon" icon="mingcute:restore-line" width="18" height="18" @click="batchRestoreUsers"/>
       </el-tooltip>
       <el-tooltip :content="$t('delete')" placement="top">
-        <Icon class="icon" icon="uiw:delete" width="16" height="16" @click="delUser"/>
+        <Icon class="icon" icon="mingcute:delete-2-line" width="18" height="18" @click="delUser"/>
       </el-tooltip>
     </div>
     <el-scrollbar ref="scrollbarRef" class="scrollbar">
@@ -330,7 +330,7 @@
           <el-dropdown-item @click="openSetPwd(rightClickUser)">
             <template #default>
               <div class="right-dropdown-item">
-                <icon icon="fluent:fingerprint-20-filled" width="22" height="22" />
+                <icon icon="mingcute:fingerprint-line" width="19" height="19" />
                 <span>{{t('changePassword')}}</span>
               </div>
             </template>
@@ -338,7 +338,7 @@
           <el-dropdown-item @click="openSetType(rightClickUser)">
             <template #default>
               <div class="right-dropdown-item">
-                <icon icon="fluent:lock-closed-16-regular" width="21" height="21" />
+                <icon icon="mingcute:lock-line" width="19" height="19" />
                 <span>{{ t('setRole') }}</span>
               </div>
             </template>
@@ -347,7 +347,7 @@
             <template #default>
               <div class="right-dropdown-item" v-if="rightClickUser.isDel !== 1" @click="setStatus(rightClickUser)" >
                 <Icon icon="mingcute:refresh-2-line" v-if="rightClickUser.status" style="margin-left: 1px;margin-right: 1px" width="19" height="19" />
-                <Icon icon="ion:ban-outline" v-else style="margin-left: 1px;margin-right: 1px" width="19" height="19" />
+                <Icon icon="mingcute:forbid-circle-line" v-else style="margin-left: 1px;margin-right: 1px" width="19" height="19" />
                 <span>{{ setRightStatusName(rightClickUser) }}</span>
               </div>
               <div class="right-dropdown-item" v-else @click="restore(rightClickUser)">
@@ -359,7 +359,7 @@
           <el-dropdown-item @click="openAccountList(rightClickUser.userId)" >
             <template #default>
               <div class="right-dropdown-item" >
-                <Icon icon="hugeicons:mailbox-01" width="20" height="20" />
+                <Icon icon="mingcute:mailbox-line" width="19" height="19" />
                 <span>{{ t('userEmail') }}</span>
               </div>
             </template>
@@ -367,7 +367,7 @@
           <el-dropdown-item @click="openDetails(rightClickUser)" >
             <template #default>
               <div class="right-dropdown-item" >
-                <Icon icon="si:user-alt-2-line" width="20" height="20" />
+                <Icon icon="mingcute:user-3-line" width="19" height="19" />
                 <span>{{ t('userDetails') }}</span>
               </div>
             </template>
@@ -375,7 +375,7 @@
           <el-dropdown-item v-if="rightClickUser.type !== 0" @click="delOneUser(rightClickUser)" >
             <template #default>
               <div class="right-dropdown-item" >
-                <Icon icon="uiw:delete" width="18" height="18" style="margin-left: 1px;margin-right: 1px" />
+                <Icon icon="mingcute:delete-2-line" width="18" height="18" style="margin-left: 1px;margin-right: 1px" />
                 <span>{{ t('adminDeleteUser') }}</span>
               </div>
             </template>

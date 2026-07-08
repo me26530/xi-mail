@@ -11,12 +11,12 @@ import roleService from '../service/role-service';
 import userService from '../service/user-service';
 import telegramService from '../service/telegram-service';
 
-function isSenderBlocked(blacklist, address) {
+function matchDomainList(list, address) {
 	if (!address) return false;
 	const atIdx = address.lastIndexOf('@');
 	if (atIdx === -1) return false;
 	const senderDomain = address.slice(atIdx + 1).toLowerCase().trim().replace(/[>)]+$/, '');
-	return blacklist.some(item => {
+	return list.some(item => {
 		const d = item.toLowerCase().trim().replace(/^@/, '');
 		if (!d) return false;
 		return senderDomain === d || senderDomain.endsWith('.' + d);
@@ -38,7 +38,9 @@ export async function email(message, env, ctx) {
 			r2Domain,
 			noRecipient,
 			domainMapping,
-			senderDomainBlacklist
+			senderDomainBlacklist,
+			senderFilterMode,
+			senderDomainWhitelist
 		} = await settingService.query({ env });
 
 		if (receive === settingConst.receive.CLOSE) {
@@ -46,9 +48,12 @@ export async function email(message, env, ctx) {
 			return;
 		}
 
-		// Block emails from blacklisted sender domains (envelope sender check, cheap early reject)
-		if (senderDomainBlacklist && senderDomainBlacklist.length > 0
-			&& isSenderBlocked(senderDomainBlacklist, message.from)) {
+		const isWhitelistMode = senderFilterMode === 1;
+
+		// Blacklist mode: reject on envelope sender match (cheap early reject).
+		// Whitelist mode is checked after parsing since either envelope or header From may authorize.
+		if (!isWhitelistMode && senderDomainBlacklist && senderDomainBlacklist.length > 0
+			&& matchDomainList(senderDomainBlacklist, message.from)) {
 			message.setReject('Sender domain blocked');
 			return;
 		}
@@ -78,13 +83,26 @@ export async function email(message, env, ctx) {
 
 		const email = await PostalMime.parse(content);
 
-		// Second blacklist check on the parsed header From address.
-		// Spam often uses a bounce/relay envelope sender on a different domain,
-		// while the visible From header (what users see and block) differs.
-		if (senderDomainBlacklist && senderDomainBlacklist.length > 0
-			&& isSenderBlocked(senderDomainBlacklist, email.from?.address)) {
-			message.setReject('Sender domain blocked');
-			return;
+		if (isWhitelistMode) {
+			// Whitelist mode: only authorized sender domains may deliver.
+			// Passes if the envelope sender OR the header From matches the whitelist,
+			// so admins can authorize either the provider bounce domain or the visible domain.
+			// An empty whitelist accepts everything to avoid accidentally rejecting all mail.
+			if (senderDomainWhitelist && senderDomainWhitelist.length > 0
+				&& !matchDomainList(senderDomainWhitelist, message.from)
+				&& !matchDomainList(senderDomainWhitelist, email.from?.address)) {
+				message.setReject('Sender not authorized');
+				return;
+			}
+		} else {
+			// Second blacklist check on the parsed header From address.
+			// Spam often uses a bounce/relay envelope sender on a different domain,
+			// while the visible From header (what users see and block) differs.
+			if (senderDomainBlacklist && senderDomainBlacklist.length > 0
+				&& matchDomainList(senderDomainBlacklist, email.from?.address)) {
+				message.setReject('Sender domain blocked');
+				return;
+			}
 		}
 
 		// If domain mapping was applied, update the To list in the parsed email
