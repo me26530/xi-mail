@@ -124,7 +124,7 @@ transferPendingList().then(list => {
    - Jade-inspired accent colors
    ══════════════════════════════════════════════════════════════════════════════ */
 .aside-root {
-  width: 240px;
+  width: 200px;
   height: 100%;
   display: flex;
   flex-direction: column;

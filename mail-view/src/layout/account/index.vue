@@ -1,7 +1,7 @@
 <template>
   <div class="account-box">
     <div class="head-opt">
-      <Icon v-perm="'account:add'" class="icon add" icon="ion:add-outline" width="22" height="22" @click="add"/>
+      <Icon v-perm="'account:add'" class="icon add" icon="mingcute:add-line" width="20" height="20" @click="add"/>
       <el-input
         v-model="searchKeyword"
         :placeholder="$t('searchAccount')"
@@ -10,7 +10,7 @@
         clearable
       >
         <template #prefix>
-          <Icon icon="iconoir:search" width="14" height="14" />
+          <Icon icon="mingcute:search-line" width="14" height="14" />
         </template>
       </el-input>
       <Icon class="icon refresh" icon="mingcute:refresh-2-line" width="16" height="16" @click="refresh"/>
@@ -30,7 +30,7 @@
             <div class="row-icon" @click.stop="setAllReceive(item)">
               <Icon
                 v-if="!item.allReceive"
-                icon="eva:email-fill"
+                icon="mingcute:mail-fill"
                 width="15" height="15"
                 class="icon-inbox"
               />
@@ -44,8 +44,8 @@
           </div>
           <div class="row-actions" @click.stop>
             <Icon
-              icon="fluent-color:clipboard-24"
-              width="16" height="16"
+              icon="mingcute:copy-2-line"
+              width="15" height="15"
               class="action-icon"
               @click.stop="copyAccount(item.email)"
             />
@@ -72,7 +72,7 @@
 
         <!-- No search results -->
         <div v-if="searchKeyword && filteredAccounts.length === 0 && !loading" class="empty-search">
-          <Icon icon="iconoir:search" width="22" height="22" />
+          <Icon icon="mingcute:search-line" width="22" height="22" />
           <span>{{ $t('noMessagesFound') }}</span>
         </div>
 

@@ -12,17 +12,17 @@
 
         <slot name="first"></slot>
         <Icon class="icon reload" icon="mingcute:refresh-2-line" width="18" height="18" @click="refresh"/>
-        <Icon v-perm="'email:delete'" class="icon delete" icon="uiw:delete" width="16" height="16"
+        <Icon v-perm="'email:delete'" class="icon delete" icon="mingcute:delete-2-line" width="18" height="18"
               v-if="getSelectedMailsIds().length > 0"
               @click="handleDelete"/>
-        <Icon v-perm="'email:delete'" class="icon delete" icon="fluent:mail-read-20-regular" width="21" height="21"
+        <Icon v-perm="'email:delete'" class="icon delete" icon="mingcute:mail-open-line" width="18" height="18"
               v-if="getSelectedMailsIds().length > 0 && showUnread"
               @click="handleRead"/>
       </div>
 
       <div class="header-right">
         <span class="email-count" v-if="total">{{ $t('emailCount', {total: total}) }}</span>
-        <Icon v-if="showAccountIcon" class="more-icon icon" width="16" height="16" icon="akar-icons:dot-grid-fill"
+        <Icon v-if="showAccountIcon" class="more-icon icon" width="18" height="18" icon="mingcute:dot-grid-line"
               @click="changeAccountShow"/>
       </div>
     </div>
@@ -50,7 +50,7 @@
                            v-model="item.checked" @click.stop></el-checkbox>
               <div @click.stop="starChange(item)" class="pc-star" v-if="showStar">
                 <Icon v-if="item.isStar" icon="fluent-color:star-16" width="20" height="20"/>
-                <Icon v-else icon="solar:star-line-duotone" width="18" height="18"/>
+                <Icon v-else icon="mingcute:star-line" width="18" height="18"/>
               </div>
               <div v-if="!showStar"></div>
               <div class="title" :class="accountShow ? 'title-column' : 'title-column'">
@@ -62,7 +62,7 @@
                     </el-tooltip>
                     <div class="del-status" v-if="item.isDel">
                       <el-tooltip effect="dark" :content="item.isDelContent">
-                        <Icon class="icon" icon="mdi:email-remove" width="20" height="20"/>
+                        <Icon class="icon" icon="mingcute:delete-back-line" width="20" height="20"/>
                       </el-tooltip>
                     </div>
                   </div>
@@ -155,7 +155,7 @@
           <el-dropdown-item v-if="['email'].includes(props.type)" @click="emailRead(rightClickEmail.emailId)" >
             <template #default>
               <div class="right-dropdown-item">
-                <Icon icon="fluent:mail-read-20-regular" width="20" height="20" />
+                <Icon icon="mingcute:mail-open-line" width="18" height="18" />
                 <span>{{t('markAsRead')}}</span>
               </div>
             </template>
@@ -163,7 +163,7 @@
           <el-dropdown-item v-if="['email','star'].includes(props.type)" @click="openReply(rightClickEmail)">
             <template #default>
               <div class="right-dropdown-item">
-                <Icon icon="la:reply" width="20" height="20"  />
+                <Icon icon="mingcute:back-2-line" width="18" height="18"  />
                 <span>{{t('reply')}}</span>
               </div>
             </template>
@@ -171,7 +171,7 @@
           <el-dropdown-item v-if="['email','send', 'star'].includes(props.type)" @click="openForward(rightClickEmail)">
             <template #default>
               <div class="right-dropdown-item">
-                <Icon icon="iconoir:arrow-up-right" width="19" height="19"  />
+                <Icon icon="mingcute:share-forward-line" width="18" height="18"  />
                 <span>{{t('forward')}}</span>
               </div>
             </template>
@@ -179,7 +179,7 @@
           <el-dropdown-item v-if="['email','send', 'star'].includes(props.type)" @click="starChange(rightClickEmail)">
             <template #default>
               <div class="right-dropdown-item">
-                <Icon icon="solar:star-line-duotone" width="19" height="19"/>
+                <Icon icon="mingcute:star-line" width="18" height="18"/>
                 <span>{{t('star')}}</span>
               </div>
             </template>
@@ -187,7 +187,7 @@
           <el-dropdown-item v-if="props.type === 'all-email'" @click="handleSearch('user', rightClickEmail.userEmail)">
             <template #default>
               <div class="right-dropdown-item">
-                <Icon icon="iconoir:search" width="20" height="20" />
+                <Icon icon="mingcute:search-line" width="18" height="18" />
                 <span>{{t('searchUser')}}</span>
               </div>
             </template>
@@ -195,7 +195,7 @@
           <el-dropdown-item v-if="props.type === 'all-email' " @click="handleSearch('account', rightClickEmail.toEmail)">
             <template #default>
               <div class="right-dropdown-item">
-                <Icon icon="iconoir:search" width="20" height="20" />
+                <Icon icon="mingcute:search-line" width="18" height="18" />
                 <span>{{t('searchEmail')}}</span>
               </div>
             </template>
@@ -203,7 +203,7 @@
           <el-dropdown-item v-if="props.type === 'all-email' " @click="handleSearch('name', rightClickEmail.name)">
             <template #default>
               <div class="right-dropdown-item">
-                <Icon icon="iconoir:search" width="20" height="20" />
+                <Icon icon="mingcute:search-line" width="18" height="18" />
                 <span>{{t('searchSender')}}</span>
               </div>
             </template>
@@ -211,7 +211,7 @@
           <el-dropdown-item @click="rightDelete(rightClickEmail.emailId)">
             <template #default>
               <div class="right-dropdown-item">
-                <Icon icon="uiw:delete" width="16" height="20" style="margin-left: 1px;margin-right: 3px" />
+                <Icon icon="mingcute:delete-2-line" width="18" height="18" style="margin-left: 1px;margin-right: 3px" />
                 <span>{{t('delete')}}</span>
               </div>
             </template>
@@ -847,14 +847,14 @@ function handleList(list) {
     email.formatCreateTime = fromNow(email.createTime);
     email.test = t('received')
     const statusIconMap = {
-      0: { icon: 'ic:round-mark-email-read', color: '#51C76B', content: t('received') },
-      1: { icon: 'bi:send-arrow-up-fill',  color: '#51C76B', content: t('sent') },
-      2: { icon: 'bi:send-check-fill',     color: '#51C76B', content: t('delivered') },
-      3: { icon: 'bi:send-x-fill',         color: '#F56C6C', content: t('bounced') },
-      8: { icon: 'bi:send-x-fill',         color: '#F56C6C', content: t('bounced') },
-      4: { icon: 'bi:send-exclamation-fill', color: '#FBBD08', content: t('complained') },
-      5: { icon: 'bi:send-arrow-up-fill',  color: '#FBBD08', content: t('delayed') },
-      7: { icon: 'ic:round-mark-email-read', color: '#FBBD08', content: t('noRecipient') },
+      0: { icon: 'mingcute:mail-open-fill',    color: '#51C76B', content: t('received') },
+      1: { icon: 'mingcute:send-fill',         color: '#51C76B', content: t('sent') },
+      2: { icon: 'mingcute:check-circle-fill', color: '#51C76B', content: t('delivered') },
+      3: { icon: 'mingcute:close-circle-fill', color: '#F56C6C', content: t('bounced') },
+      8: { icon: 'mingcute:close-circle-fill', color: '#F56C6C', content: t('bounced') },
+      4: { icon: 'mingcute:warning-fill',      color: '#FBBD08', content: t('complained') },
+      5: { icon: 'mingcute:time-fill',         color: '#FBBD08', content: t('delayed') },
+      7: { icon: 'mingcute:question-fill',     color: '#FBBD08', content: t('noRecipient') },
     };
 
     if (email.isDel) {
