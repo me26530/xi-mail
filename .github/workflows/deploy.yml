@@ -72,14 +72,53 @@ jobs:
 
           fail() { echo "::error title=Bad wrangler.toml::$1"; exit 1; }
 
-          grep -Eq '^[[:space:]]*name[[:space:]]*=' "$TOML" || fail "missing top-level 'name'"
-          grep -Eq '^[[:space:]]*main[[:space:]]*=[[:space:]]*"src/index\.js"' "$TOML" || fail 'main must be exactly "src/index.js"'
-          grep -Eq '^[[:space:]]*compatibility_date[[:space:]]*=' "$TOML" || fail "missing compatibility_date"
-          if grep -qE '<YOUR_|YOUR_D1|YOUR_KV|__PLACEHOLDER__|CHANGE_ME' "$TOML"; then
-            fail "config still contains placeholder IDs (database_id / kv id / bucket)"
+          # 关键：wrangler.example.toml 里大量示例值写在注释里
+          #   # linuxdo_client_id = "<YOUR_LINUXDO_CLIENT_ID>"
+          # 直接对全文 grep 占位符会误报。这里先剥离注释再判断。
+          grep -vE '^[[:space:]]*#' "$TOML" > wrangler.effective.toml
+          sed -E 's/[[:space:]]+#.*$//' wrangler.effective.toml > wrangler.values.toml
+
+          echo "::group::Effective config (comments stripped)"
+          cat wrangler.values.toml
+          echo "::endgroup::"
+
+          grep -Eq '^[[:space:]]*name[[:space:]]*=' wrangler.effective.toml || fail "missing top-level 'name'"
+          grep -Eq '^[[:space:]]*main[[:space:]]*=[[:space:]]*"src/index\.js"' wrangler.effective.toml || fail 'main must be exactly "src/index.js"'
+          grep -Eq '^[[:space:]]*compatibility_date[[:space:]]*=' wrangler.effective.toml || fail "missing compatibility_date"
+
+          # 只在“有效配置”里找占位符，并打印命中行，方便直接定位
+          hits=$(grep -nEi '<YOUR_[A-Z0-9_]*>|YOUR_D1_DATABASE_ID|YOUR_KV_NAMESPACE_ID|__PLACEHOLDER__|CHANGE_?ME|your-.*-id' wrangler.values.toml || true)
+          if [ -n "$hits" ]; then
+            echo "--- placeholder hits ---"
+            echo "$hits"
+            fail "these lines still hold placeholder values; replace them with real Cloudflare IDs"
           fi
-          grep -qE '^[[:space:]]*\[\[d1_databases\]\]' "$TOML" || fail "missing [[d1_databases]] binding"
-          grep -qE '^[[:space:]]*binding[[:space:]]*=[[:space:]]*"db"' "$TOML" || fail 'd1 binding must be "db"'
+
+          grep -qE '^[[:space:]]*\[\[d1_databases\]\]' wrangler.effective.toml || fail "missing [[d1_databases]] binding"
+          grep -qE '^[[:space:]]*binding[[:space:]]*=[[:space:]]*"db"' wrangler.effective.toml || fail 'd1 binding must be "db"'
+          grep -qE '^[[:space:]]*\[\[kv_namespaces\]\]' wrangler.effective.toml || fail "missing [[kv_namespaces]] binding"
+          grep -qE '^[[:space:]]*binding[[:space:]]*=[[:space:]]*"kv"' wrangler.effective.toml || fail 'kv binding must be "kv"'
+
+          # 值不能为空
+          while IFS='=' read -r key value; do
+            key=$(echo "$key" | tr -d '[:space:]')
+            value=$(echo "$value" | tr -d '[:space:]"'"'")
+            [ -n "$value" ] || fail "$key is empty"
+          done < <(grep -E '^[[:space:]]*(database_id|id|bucket_name)[[:space:]]*=' wrangler.values.toml || true)
+
+          # ID 形态检查（只警告不失败，兼容未来格式变化）
+          db_id=$(grep -E '^[[:space:]]*database_id[[:space:]]*=' wrangler.values.toml | head -n 1 | sed -E 's/.*=[[:space:]]*"?([^"]*)"?.*/\1/' | tr -d '[:space:]')
+          kv_id=$(grep -E '^[[:space:]]*id[[:space:]]*=' wrangler.values.toml | head -n 1 | sed -E 's/.*=[[:space:]]*"?([^"]*)"?.*/\1/' | tr -d '[:space:]')
+
+          echo "database_id = ${db_id:0:8}... (len ${#db_id})"
+          echo "kv id       = ${kv_id:0:8}... (len ${#kv_id})"
+
+          if ! echo "$db_id" | grep -qiE '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'; then
+            echo "::warning title=database_id format::'$db_id' is not a UUID; wrangler may reject it."
+          fi
+          if ! echo "$kv_id" | grep -qiE '^[0-9a-f]{32}$'; then
+            echo "::warning title=kv id format::'$kv_id' is not 32 hex chars; wrangler may reject it."
+          fi
 
           echo "wrangler.toml validation passed."
 
