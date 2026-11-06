@@ -10,107 +10,300 @@ concurrency:
   group: xi-mail-deploy
   cancel-in-progress: true
 
+env:
+  NODE_VERSION: '22'
+  FRONTEND_DIR: mail-view
+  WORKER_DIR: mail-worker
+  # package.json 里 @vitejs/plugin-vue 是 v5，只支持 vite 5/6，锁到 v6 更稳
+  VITE_OVERRIDE: '^6.3.5'
+
 jobs:
   deploy:
     name: Build and Deploy Xi-Mail
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ env.NODE_VERSION }}
 
-      - name: Write wrangler.toml from GitHub Secret
-        env:
-          WRANGLER_TOML_MAIN: ${{ secrets.WRANGLER_TOML }}
+      - name: Show toolchain
         run: |
-          if [ -z "$WRANGLER_TOML_MAIN" ]; then
-            echo "ERROR: GitHub Secret WRANGLER_TOML is empty or not set."
+          node -v
+          npm -v
+
+      # ── 1. 用 Secret 写 wrangler.toml，并清掉会在 CI 里炸掉的 [build] 段 ──
+      - name: Create wrangler.toml from secret
+        env:
+          WRANGLER_TOML: ${{ secrets.WRANGLER_TOML }}
+        run: |
+          set -euo pipefail
+          TOML="$WORKER_DIR/wrangler.toml"
+
+          if [ -z "${WRANGLER_TOML:-}" ]; then
+            echo "::error title=Missing secret::GitHub Secret WRANGLER_TOML is empty or not set."
             exit 1
           fi
+          printf '%s\n' "$WRANGLER_TOML" > "$TOML"
 
-          printf '%s\n' "$WRANGLER_TOML_MAIN" > mail-worker/wrangler.toml
-
-          echo "Generated mail-worker/wrangler.toml:"
-          sed -n '1,40p' mail-worker/wrangler.toml
-
-          if ! grep -q '^main *= *"src/index.js"' mail-worker/wrangler.toml; then
-            echo "ERROR: wrangler.toml does not contain main = \"src/index.js\""
-            exit 1
+          # [build] 会让 wrangler 在 deploy 时再跑一次构建钩子。
+          # 上游示例里是 pnpm --prefix ../mail-vue（目录已改名 mail-view），
+          # 在 CI 里必然失败退出 1，是常见失败源，这里直接剥离。
+          if grep -qE '^[[:space:]]*\[build\]' "$TOML"; then
+            echo "::warning title=[build] removed::wrangler.toml contains a [build] section; stripped because this workflow builds the frontend itself."
+            awk '
+              /^[[:space:]]*\[build\][[:space:]]*$/ { skip = 1; next }
+              skip && /^[[:space:]]*\[/ { skip = 0 }
+              !skip { print }
+            ' "$TOML" > "$TOML.tmp"
+            mv "$TOML.tmp" "$TOML"
           fi
 
-      - name: Fix frontend package dependencies
+          echo "::group::Generated wrangler.toml"
+          cat "$TOML"
+          echo "::endgroup::"
+
+          fail() { echo "::error title=Bad wrangler.toml::$1"; exit 1; }
+
+          grep -Eq '^[[:space:]]*name[[:space:]]*=' "$TOML" || fail "missing top-level 'name'"
+          grep -Eq '^[[:space:]]*main[[:space:]]*=[[:space:]]*"src/index\.js"' "$TOML" || fail 'main must be exactly "src/index.js"'
+          grep -Eq '^[[:space:]]*compatibility_date[[:space:]]*=' "$TOML" || fail "missing compatibility_date"
+          if grep -qE '<YOUR_|YOUR_D1|YOUR_KV|__PLACEHOLDER__|CHANGE_ME' "$TOML"; then
+            fail "config still contains placeholder IDs (database_id / kv id / bucket)"
+          fi
+          grep -qE '^[[:space:]]*\[\[d1_databases\]\]' "$TOML" || fail "missing [[d1_databases]] binding"
+          grep -qE '^[[:space:]]*binding[[:space:]]*=[[:space:]]*"db"' "$TOML" || fail 'd1 binding must be "db"'
+
+          echo "wrangler.toml validation passed."
+
+      # ── 2. 前端 package.json 清洗 ─────────────────────────────────────
+      #    a) 删掉 Windows 专用 @tailwindcss/oxide-*（Linux runner 上原生绑定缺失）
+      #    b) vite 锁到 plugin-vue v5 支持的版本
+      - name: Sanitize frontend package.json
         working-directory: mail-view
         run: |
-          echo "Fixing package.json platform-specific dependencies..."
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('fs');
+          const file = 'package.json';
+          const pkg = JSON.parse(fs.readFileSync(file, 'utf8'));
+          const log = [];
 
-          npm pkg delete dependencies.@tailwindcss/oxide-win32-x64-msvc || true
-          npm pkg delete devDependencies.@tailwindcss/oxide-win32-x64-msvc || true
-          npm pkg delete optionalDependencies.@tailwindcss/oxide-win32-x64-msvc || true
+          for (const field of ['dependencies', 'devDependencies', 'optionalDependencies']) {
+            if (!pkg[field]) continue;
+            for (const name of Object.keys(pkg[field])) {
+              if (name.startsWith('@tailwindcss/oxide-')) {
+                delete pkg[field][name];
+                log.push('removed ' + field + '.' + name);
+              }
+            }
+          }
 
-          npm pkg delete dependencies.@tailwindcss/oxide-win32-ia32-msvc || true
-          npm pkg delete devDependencies.@tailwindcss/oxide-win32-ia32-msvc || true
-          npm pkg delete optionalDependencies.@tailwindcss/oxide-win32-ia32-msvc || true
+          const want = process.env.VITE_OVERRIDE;
+          if (want) {
+            pkg.devDependencies = pkg.devDependencies || {};
+            if (pkg.devDependencies.vite !== want) {
+              log.push('vite ' + pkg.devDependencies.vite + ' -> ' + want);
+              pkg.devDependencies.vite = want;
+            }
+          }
 
-          npm pkg delete dependencies.@tailwindcss/oxide-win32-arm64-msvc || true
-          npm pkg delete devDependencies.@tailwindcss/oxide-win32-arm64-msvc || true
-          npm pkg delete optionalDependencies.@tailwindcss/oxide-win32-arm64-msvc || true
+          fs.writeFileSync(file, JSON.stringify(pkg, null, 2) + '\n');
+          console.log(log.length ? log.join('\n') : 'package.json already clean');
+          NODE
 
-          echo "Downgrading vite to v6 for @vitejs/plugin-vue v5 compatibility..."
-          npm pkg set devDependencies.vite="^6.3.5"
-
-          echo "Cleaning frontend lockfile and node_modules..."
-          rm -f package-lock.json
-          rm -rf node_modules
+          rm -rf node_modules package-lock.json
+          echo "--- devDependencies ---"
+          node -e "console.log(JSON.stringify(require('./package.json').devDependencies, null, 2))"
 
       - name: Install frontend dependencies
         working-directory: mail-view
-        run: npm install --legacy-peer-deps
+        run: npm install --legacy-peer-deps --no-audit --no-fund
 
+      # 构建模式由 mail-view/.env.release 决定：
+      #   VITE_OUT_DIR=../mail-worker/dist、VITE_BASE_URL=/api
+      # 需要覆盖接口地址时，在仓库 Variables 加 VITE_BASE_URL 即可。
       - name: Build frontend
         working-directory: mail-view
         env:
-          VITE_WORKER_URL: ${{ vars.VITE_WORKER_URL }}
-        run: npm run build
-
-      - name: Clean worker dependencies
-        working-directory: mail-worker
+          VITE_BASE_URL: ${{ vars.VITE_BASE_URL }}
         run: |
-          rm -rf node_modules
+          set -euo pipefail
+          [ -n "${VITE_BASE_URL:-}" ] && echo "VITE_BASE_URL=$VITE_BASE_URL" || echo "VITE_BASE_URL from .env.release"
+          npm run build
 
-      - name: Install worker dependencies
-        working-directory: mail-worker
-        run: npm install --legacy-peer-deps
-
-      - name: Check worker files before deploy
-        working-directory: mail-worker
+      - name: Verify build output
         run: |
-          echo "Current directory:"
-          pwd
+          set -euo pipefail
+          DIST="$WORKER_DIR/dist"
 
-          echo "Files:"
-          ls -la
-
-          echo "src files:"
-          ls -la src || true
-
-          echo "wrangler.toml:"
-          sed -n '1,80p' wrangler.toml
-
-          if [ ! -f "src/index.js" ]; then
-            echo "ERROR: mail-worker/src/index.js not found."
-            exit 1
+          if [ ! -f "$DIST/index.html" ]; then
+            if [ -f "$FRONTEND_DIR/dist/index.html" ]; then
+              echo "::warning title=Output location::build landed in $FRONTEND_DIR/dist; copying to $DIST (check VITE_OUT_DIR)"
+              rm -rf "$DIST"
+              cp -r "$FRONTEND_DIR/dist" "$DIST"
+            else
+              echo "::error title=Missing build output::no index.html in $DIST or $FRONTEND_DIR/dist"
+              exit 1
+            fi
           fi
 
+          echo "files: $(find "$DIST" -type f | wc -l)"
+          echo "size:  $(du -sh "$DIST" | cut -f1)"
+
+          # Workers Static Assets 限制：单文件 25 MiB；文件数免费 20000 / 付费 100000
+          max_bytes=$(find "$DIST" -type f -printf '%s\n' | sort -n | tail -n 1)
+          echo "largest file: $((max_bytes / 1024)) KiB"
+          if [ "$max_bytes" -gt 26214400 ]; then
+            echo "::error title=Asset too large::a file in dist exceeds the 25 MiB Workers Assets limit"
+            exit 1
+          fi
+          files=$(find "$DIST" -type f | wc -l)
+          if [ "$files" -gt 20000 ]; then
+            echo "::warning title=Many assets::dist has $files files, free plan allows 20000 per Worker version"
+          fi
+
+      # ── 3. Worker 依赖（用仓库锁定的 wrangler 版本）──────────────────
+      - name: Install worker dependencies
+        working-directory: mail-worker
+        run: |
+          set -euo pipefail
+          rm -rf node_modules
+          npm install --legacy-peer-deps --no-audit --no-fund
+          npx --no-install wrangler --version
+
+      - name: Inspect worker
+        working-directory: mail-worker
+        run: |
+          set -euo pipefail
+          pwd
+          ls -la
+          echo "--- src ---"
+          ls -la src
+          echo "--- dist ---"
+          ls -la dist | head -n 20
+          [ -f src/index.js ] || { echo "::error title=Missing entry::mail-worker/src/index.js not found"; exit 1; }
+
+      # ── 4. 凭据自检（不阻塞，但失败信息会直接写进日志）────────────────
+      - name: Verify Cloudflare credentials
+        working-directory: mail-worker
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CI: true
+        run: |
+          if [ -z "${CLOUDFLARE_API_TOKEN:-}" ]; then
+            echo "::warning title=Missing token::CLOUDFLARE_API_TOKEN secret is empty"
+          fi
+          npx --no-install wrangler whoami 2>&1 | tee wrangler-whoami.log || true
+
+      # ── 5. dry-run：配置 / 体积 / 绑定错误提前暴露 ────────────────────
+      - name: Validate bundle (dry run)
+        working-directory: mail-worker
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CI: true
+        run: |
+          rm -rf /tmp/dry-run
+          npx --no-install wrangler deploy --dry-run --outdir=/tmp/dry-run --config wrangler.toml 2>&1 | tee wrangler-dry-run.log || true
+          echo "--- worker bundle ---"
+          ls -lhR /tmp/dry-run 2>/dev/null | head -n 40 || true
+          grep -iE 'Total Upload|Total size|Your Worker has access to' wrangler-dry-run.log || true
+
+      # ── 6. 部署：本地 wrangler + 重试 + 完整日志 ──────────────────────
       - name: Deploy to Cloudflare Workers
-        uses: cloudflare/wrangler-action@v3
+        working-directory: mail-worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CI: true
+          WRANGLER_SEND_METRICS: 'false'
+        run: |
+          set -o pipefail
+
+          for attempt in 1 2 3; do
+            echo "::group::wrangler deploy (attempt $attempt)"
+            if npx --no-install wrangler deploy --config wrangler.toml 2>&1 | tee "wrangler-deploy-$attempt.log"; then
+              echo "::endgroup::"
+              cp "wrangler-deploy-$attempt.log" wrangler-deploy.log
+              echo "Deploy OK on attempt $attempt."
+              exit 0
+            fi
+            echo "::endgroup::"
+            cp "wrangler-deploy-$attempt.log" wrangler-deploy.log
+            echo "::warning::attempt $attempt failed"
+
+            if ! grep -qiE 'network|socket hang up|EAI_AGAIN|ECONNRESET|ETIMEDOUT|timed out|timeout|502|503|504|rate limit|internal server error' "wrangler-deploy-$attempt.log"; then
+              echo "::error title=Deploy failed::non-transient error, aborting without retry."
+              echo "--- last 60 lines ---"
+              tail -n 60 "wrangler-deploy-$attempt.log"
+              exit 1
+            fi
+            sleep $((attempt * 10))
+          done
+
+          echo "::error title=Deploy failed::all 3 attempts failed"
+          exit 1
+
+      # ── 7. 日志 artifact + Job Summary（失败也能看到关键报错）──────────
+      - name: Upload wrangler logs
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: mail-worker
-          command: deploy --config wrangler.toml
+          name: wrangler-logs-${{ github.run_number }}-${{ github.run_attempt }}
+          path: |
+            mail-worker/wrangler-*.log
+            /tmp/dry-run/index.js
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Write job summary
+        if: always()
+        run: |
+          {
+            echo "## Deploy Xi-Mail"
+            echo
+            echo "| item | value |"
+            echo "| --- | --- |"
+            echo "| commit | \`${GITHUB_SHA:0:7}\` |"
+            echo "| node | $(node -v) |"
+            echo
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          for f in mail-worker/wrangler-deploy.log mail-worker/wrangler-dry-run.log mail-worker/wrangler-whoami.log; do
+            if [ -f "$f" ]; then
+              echo "### $f (tail)" >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              tail -n 40 "$f" >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              echo >> "$GITHUB_STEP_SUMMARY"
+            fi
+          done
+
+      # ── 8. 可选健康检查：Variables 里设置 XI_MAIL_URL 才生效 ──────────
+      - name: Health check
+        continue-on-error: true
+        env:
+          CHECK_URL: ${{ vars.XI_MAIL_URL }}
+        run: |
+          if [ -z "${CHECK_URL:-}" ]; then
+            echo "XI_MAIL_URL not configured, skipping."
+            exit 0
+          fi
+          for i in 1 2 3 4 5; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 "$CHECK_URL" || echo 000)
+            echo "attempt $i -> HTTP $code"
+            [ "$code" = "200" ] && exit 0
+            sleep 6
+          done
+          echo "::warning title=Health check::GET $CHECK_URL did not return 200"
